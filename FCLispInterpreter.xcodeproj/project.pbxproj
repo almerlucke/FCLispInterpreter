@@ -10,6 +10,9 @@
 		CB5BC89817F8CB7700084263 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5BC89717F8CB7700084263 /* Foundation.framework */; };
 		CB5BC89B17F8CB7700084263 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC89A17F8CB7700084263 /* main.m */; };
 		CB5BC89F17F8CB7700084263 /* FCLispInterpreter.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */; };
+		CB5BC8A917F8CB9D00084263 /* FCLispParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8A617F8CB9D00084263 /* FCLispParser.m */; };
+		CB5BC8AA17F8CB9D00084263 /* FCLispParserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */; };
+		CB5BC8AD17F8CF7F00084263 /* FCLispException.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8AC17F8CF7F00084263 /* FCLispException.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +34,12 @@
 		CB5BC89A17F8CB7700084263 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CB5BC89D17F8CB7700084263 /* FCLispInterpreter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FCLispInterpreter-Prefix.pch"; sourceTree = "<group>"; };
 		CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FCLispInterpreter.1; sourceTree = "<group>"; };
+		CB5BC8A517F8CB9D00084263 /* FCLispParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispParser.h; sourceTree = "<group>"; };
+		CB5BC8A617F8CB9D00084263 /* FCLispParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispParser.m; sourceTree = "<group>"; };
+		CB5BC8A717F8CB9D00084263 /* FCLispParserToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispParserToken.h; sourceTree = "<group>"; };
+		CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispParserToken.m; sourceTree = "<group>"; };
+		CB5BC8AB17F8CF7F00084263 /* FCLispException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispException.h; sourceTree = "<group>"; };
+		CB5BC8AC17F8CF7F00084263 /* FCLispException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispException.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +82,12 @@
 		CB5BC89917F8CB7700084263 /* FCLispInterpreter */ = {
 			isa = PBXGroup;
 			children = (
+				CB5BC8AB17F8CF7F00084263 /* FCLispException.h */,
+				CB5BC8AC17F8CF7F00084263 /* FCLispException.m */,
+				CB5BC8A517F8CB9D00084263 /* FCLispParser.h */,
+				CB5BC8A617F8CB9D00084263 /* FCLispParser.m */,
+				CB5BC8A717F8CB9D00084263 /* FCLispParserToken.h */,
+				CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */,
 				CB5BC89A17F8CB7700084263 /* main.m */,
 				CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */,
 				CB5BC89C17F8CB7700084263 /* Supporting Files */,
@@ -139,7 +154,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB5BC8AD17F8CF7F00084263 /* FCLispException.m in Sources */,
 				CB5BC89B17F8CB7700084263 /* main.m in Sources */,
+				CB5BC8AA17F8CB9D00084263 /* FCLispParserToken.m in Sources */,
+				CB5BC8A917F8CB9D00084263 /* FCLispParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

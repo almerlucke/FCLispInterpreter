@@ -6,16 +6,29 @@
 //  Copyright (c) 2013 Farcoding. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "FCLispParser.h"
+#import "FCLispParserToken.h"
+#import "FCLispException.h"
+
 
 int main(int argc, const char * argv[])
 {
-
     @autoreleasepool {
-        
-        // insert code here...
-        NSLog(@"Hello, World!");
-        
+        @try {
+            FCLispParser *parser = [FCLispParser parserWithString:@"checkitoutmanbrodoitnow \"check it out now its the funk soul brother \\\"right about now do it! dot it!\""];
+            FCLispParserToken *token = [parser getToken];
+            
+            while (token) {
+                NSLog(@"token %@", token);
+                token = [parser getToken];
+            }
+        }
+        @catch (FCLispException *exception) {
+            NSLog(@"out of memory");
+        }
+        @finally {
+            
+        }
     }
     return 0;
 }
