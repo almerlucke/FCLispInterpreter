@@ -15,13 +15,13 @@
     return @"FCLispException";
 }
 
-+ (NSString *)reasonFromType:(FCLispExceptionType)type
++ (NSString *)reasonForType:(NSInteger)type andUserInfo:(NSDictionary *)userInfo
 {
     NSString *reason = @"";
     
     switch (type) {
         case FCLispExceptionTypeOutOfMemory:
-            reason = @"Out Of Memory";
+            reason = @"Out of memory";
             break;
         default:
             break;
@@ -30,17 +30,17 @@
     return reason;
 }
 
-+ (FCLispException *)exceptionWithType:(FCLispExceptionType)type
++ (FCLispException *)exceptionWithType:(NSInteger)type
 {
     return [[FCLispException alloc] initWithName:[self exceptionName]
-                                          reason:[self reasonFromType:type]
+                                          reason:[self reasonForType:type andUserInfo:nil]
                                         userInfo:nil];
 }
 
-+ (FCLispException *)exceptionWithType:(FCLispExceptionType)type userInfo:(NSDictionary *)userInfo
++ (FCLispException *)exceptionWithType:(NSInteger)type userInfo:(NSDictionary *)userInfo
 {
     return [[FCLispException alloc] initWithName:[self exceptionName]
-                                          reason:[self reasonFromType:type]
+                                          reason:[self reasonForType:type andUserInfo:userInfo]
                                         userInfo:userInfo];
 }
 

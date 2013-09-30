@@ -15,7 +15,7 @@ int main(int argc, const char * argv[])
 {
     @autoreleasepool {
         @try {
-            FCLispParser *parser = [FCLispParser parserWithString:@"checkitoutmanbrodoitnow \"check it out now its the funk soul brother \\\"right about now do it! dot it!\""];
+            FCLispParser *parser = [FCLispParser parserWithString:@"\"dhdhdh\n3444"];
             FCLispParserToken *token = [parser getToken];
             
             while (token) {
@@ -24,7 +24,7 @@ int main(int argc, const char * argv[])
             }
         }
         @catch (FCLispException *exception) {
-            NSLog(@"out of memory");
+            NSLog(@"%@: %@", exception.name, exception.reason);
         }
         @finally {
             

@@ -11,8 +11,57 @@
 
 
 #define FCLISP_PARSER_BUFFER_LENGTH 4096
-#define FCLISP_PARSER_INITIAL_MAX_TOKEN_LENGTH 4
+#define FCLISP_PARSER_INITIAL_MAX_TOKEN_LENGTH 4096
 
+
+#pragma mark - Exceptions
+
+typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
+{
+    FCLispParserExceptionTypeEndOfStreamBeforeEndOfComment,
+    FCLispParserExceptionTypeEndOfStreamBeforeEndOfString,
+    FCLispParserExceptionTypeIllegalCharacter
+};
+
+
+@interface FCLispParserException : FCLispException
+
+@end
+
+@implementation FCLispParserException
+
++ (NSString *)exceptionName
+{
+    return @"FCLispParserException";
+}
+
++ (NSString *)reasonForType:(NSInteger)type andUserInfo:(NSDictionary *)userInfo
+{
+    NSString *reason = @"";
+    NSNumber *lineCount = [userInfo objectForKey:@"lineCount"];
+    
+    switch (type) {
+        case FCLispParserExceptionTypeEndOfStreamBeforeEndOfComment:
+            reason = [NSString stringWithFormat:@"Line %@, end of stream reached before end of comment", lineCount];
+            break;
+        case FCLispParserExceptionTypeEndOfStreamBeforeEndOfString:
+            reason = [NSString stringWithFormat:@"Line %@, end of stream reached before end of string", lineCount];
+            break;
+        case FCLispParserExceptionTypeIllegalCharacter:
+            reason = [NSString stringWithFormat:@"Line %@, illegal character", lineCount];
+            break;
+        default:
+            break;
+    }
+    
+    return reason;
+}
+
+@end
+
+
+
+#pragma mark - Parser
 
 
 @interface FCLispParser ()
@@ -31,7 +80,12 @@
     NSInteger _tokenLength;
     uint8_t *_tokenBuffer;
     
+    // stream
     NSInputStream *_inputStream;
+    
+    // stats
+    NSInteger _lineCount;
+    NSInteger _charCount;
 }
 @end
 
@@ -41,6 +95,8 @@
 
 - (void)initialize
 {
+    _lineCount = 0;
+    _charCount = 0;
     _prevChar = EOF;
     _curChar = EOF;
     _nextChar = EOF;
@@ -139,11 +195,29 @@
 
 #pragma mark - Parse Utils
 
+- (void)updateStats
+{
+    if (_curChar == 0x0A) {
+        if (_prevChar != 0x0D) {
+            _charCount = 0;
+            _lineCount++;
+        }
+    } else if (_curChar == 0x0D) {
+        _charCount = 0;
+        _lineCount++;
+    } else if (_curChar != EOF) {
+        _charCount++;
+    }
+}
+
 // get next character
 - (NSInteger)getChar
 {
     _prevChar = _curChar;
     _curChar = _nextChar;
+    
+    [self updateStats];
+    
     if (_curBytePos >= _bytesAvailable) {
         _bytesAvailable = [_inputStream read:_buffer maxLength:_bufferLength];
         
@@ -211,13 +285,37 @@
         } else if (_curChar != EOF) {
             [self getChar];
         } else {
-            NSString *reason = @"End of stream reached before closing comment";
-            NSException *exception = [NSException exceptionWithName:@"PARSER exception"
-                                                             reason:reason
-                                                           userInfo:nil];
-            @throw exception;
+            @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeEndOfStreamBeforeEndOfComment
+                                                   userInfo:[self lineInfo]];
         }
     }
+}
+
+#pragma mark - Info
+
+- (NSInteger)lineCount
+{
+    return _lineCount + 1;
+}
+
+- (NSInteger)charCount
+{
+    return _charCount + 1;
+}
+
+- (NSDictionary *)lineInfo
+{
+    return @{@"lineCount": [NSNumber numberWithInteger:[self lineCount]],
+             @"charCount": [NSNumber numberWithInteger:[self charCount]]};
+}
+
+- (NSDictionary *)userInfoWithDictionary:(NSDictionary *)dict
+{
+    NSMutableDictionary *mutDict = [NSMutableDictionary dictionaryWithDictionary:dict];
+    [mutDict setObject:[NSNumber numberWithInteger:[self lineCount]] forKey:@"lineCount"];
+    [mutDict setObject:[NSNumber numberWithInteger:[self charCount]] forKey:@"charCount"];
+    
+    return [NSDictionary dictionaryWithDictionary:mutDict];
 }
 
 
@@ -271,11 +369,8 @@
             break;
         } else if (_curChar == EOF) {
             // signal an error if end of stream is reached before end of string
-            NSString *reason = @"End of stream reached before end of string";
-            NSException *exception = [NSException exceptionWithName:@"PARSER error"
-                                                             reason:reason
-                                                           userInfo:nil];
-            @throw  exception;
+            @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeEndOfStreamBeforeEndOfString
+                                                   userInfo:[self lineInfo]];
         } else {
             // just add current char to token
             [self addTokenChar:_curChar];
@@ -357,11 +452,8 @@
     } else if ([[self class] isSymbolChar:_curChar]) {
         return [self getSymbolToken];
     } else if (_curChar != EOF) {
-        NSString *reason = [NSString stringWithFormat:@"Illegal character %c encountered", (char)_curChar];
-        NSException *exception = [NSException exceptionWithName:@"PARSER exception"
-                                                         reason:reason
-                                                       userInfo:nil];
-        @throw exception;
+        @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeIllegalCharacter
+                                               userInfo:[self lineInfo]];
     }
     
     return nil;

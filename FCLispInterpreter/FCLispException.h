@@ -10,10 +10,15 @@
 
 typedef NS_ENUM(NSInteger, FCLispExceptionType)
 {
-    FCLispExceptionTypeOutOfMemory = -1
+    FCLispExceptionTypeOutOfMemory
 };
 
 @interface FCLispException : NSException
-+ (FCLispException *)exceptionWithType:(FCLispExceptionType)type;
-+ (FCLispException *)exceptionWithType:(FCLispExceptionType)type userInfo:(NSDictionary *)userInfo;
+
++ (FCLispException *)exceptionWithType:(NSInteger)type;
++ (FCLispException *)exceptionWithType:(NSInteger)type userInfo:(NSDictionary *)userInfo;
+
++ (NSString *)exceptionName;
++ (NSString *)reasonForType:(NSInteger)type andUserInfo:(NSDictionary *)userInfo;
+
 @end

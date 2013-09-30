@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "FCLispParserToken.h"
+#import "FCLispException.h"
+
 
 @interface FCLispParser : NSObject
 
@@ -28,5 +30,8 @@
 #pragma mark - Token
 // get next token from parser (nil if no more tokens are available)
 - (FCLispParserToken *)getToken;
+
+- (NSInteger)lineCount;
+- (NSInteger)charCount;
 
 @end
