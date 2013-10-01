@@ -8,7 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+
 @class FCLispSymbol;
+@class FCLispScopeStack;
+
 
 @interface FCLispEnvironment : NSObject
 
@@ -22,7 +25,7 @@
 /**
  *  Generate a symbol, symbols SHOULD only be generated via gensym
  *
- *  @param name : symbol name
+ *  @param name Symbol name
  *
  *  @return a new or existing symbol
  */
@@ -31,8 +34,22 @@
 /**
  *  Register a class with the environment
  *
- *  @param theClass : MUST be a FCLispObject subclass
+ *  @param theClass MUST be a FCLispObject subclass
  */
 + (void)registerClass:(Class)theClass;
+
+/**
+ *  Main thread scope stack
+ *
+ *  @return FCLispScopeStack object
+ */
++ (FCLispScopeStack *)defaultScopeStack;
+
+/**
+ *  Global scope, this SHOULD be the first entry in any scope stack object
+ *
+ *  @return NSMutableDictionary representing the current global scope
+ */
++ (NSMutableDictionary *)globalScope;
 
 @end

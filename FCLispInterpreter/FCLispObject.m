@@ -10,7 +10,7 @@
 
 @implementation FCLispObject
 
-+ (void)addMethodsToEnvironment:(FCLispEnvironment *)environment
++ (void)addGlobalBindingsToEnvironment:(FCLispEnvironment *)environment
 {
     // do nothing
 }

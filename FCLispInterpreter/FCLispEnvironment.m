@@ -9,6 +9,7 @@
 #import "FCLispEnvironment.h"
 #import "FCLispSymbol.h"
 #import "FCLispObject.h"
+#import "FCLispScopeStack.h"
 
 
 /**
@@ -26,6 +27,16 @@
      *  in serial on a dedicated queue
      */
     dispatch_queue_t _symbolCreationQueue;
+    
+    /**
+     *  Global scope dictionary, this SHOULD be the first entry into any scope stack
+     */
+    NSMutableDictionary *_globalScope;
+    
+    /**
+     *  Default (main thread) scope stack
+     */
+    FCLispScopeStack *_scopeStack;
 }
 @end
 
@@ -49,14 +60,23 @@
 
 - (void)initialize
 {
+    // symbol dictionary
     _symbols = [NSMutableDictionary dictionary];
+    
+    // create serial symbol creation queue
     _symbolCreationQueue = dispatch_queue_create("kFCLispEnvironmentSymbolQueue", DISPATCH_QUEUE_SERIAL);
+    
+    // create global scope
+    _globalScope = [NSMutableDictionary dictionary];
+    
+    // create main thread scope stack
+    _scopeStack = [FCLispScopeStack scopeStackWithScope:_globalScope];
 }
 
 - (id)init
 {
     if ((self = [super init])) {
-        
+        [self initialize];
     }
     
     return self;
@@ -100,8 +120,31 @@
 + (void)registerClass:(Class)theClass
 {
     if ([theClass isSubclassOfClass:[FCLispObject class]]) {
-        [theClass addMethodsToEnvironment:[self defaultEnvironment]];
+        [theClass addGlobalBindingsToEnvironment:[self defaultEnvironment]];
     }
+}
+
+
+#pragma mark - Scope
+
+- (FCLispScopeStack *)defaultScopeStack
+{
+    return _scopeStack;
+}
+
++ (FCLispScopeStack *)defaultScopeStack
+{
+    return [[self defaultEnvironment] defaultScopeStack];
+}
+
+- (NSMutableDictionary *)globalScope
+{
+    return _globalScope;
+}
+
++ (NSMutableDictionary *)globalScope
+{
+    return [[self defaultEnvironment] globalScope];
 }
 
 @end

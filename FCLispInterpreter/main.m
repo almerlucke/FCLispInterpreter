@@ -9,13 +9,15 @@
 #import "FCLispParser.h"
 #import "FCLispParserToken.h"
 #import "FCLispException.h"
-
+#import "FCLispEnvironment.h"
+#import "FCLispSymbol.h"
+#import "FCLispScopeStack.h"
 
 int main(int argc, const char * argv[])
 {
     @autoreleasepool {
         @try {
-            FCLispParser *parser = [FCLispParser parserWithString:@"\"dhdhdh\n3444"];
+            FCLispParser *parser = [FCLispParser parserWithString:@"\"dhdhdh\" check"];
             FCLispParserToken *token = [parser getToken];
             
             while (token) {
@@ -29,6 +31,15 @@ int main(int argc, const char * argv[])
         @finally {
             
         }
+        
+        FCLispSymbol *firstSymbol = [FCLispSymbol genSym:@"first"];
+        FCLispScopeStack *globalScopeStack = [FCLispEnvironment defaultScopeStack];
+        [globalScopeStack addBinding:[FCLispSymbol genSym:@"check1"] forSymbol:firstSymbol];
+        [globalScopeStack pushScope:nil];
+        [globalScopeStack addBinding:[FCLispSymbol genSym:@"check2"] forSymbol:firstSymbol];
+        NSLog(@"binding %@", [globalScopeStack bindingForSymbol:firstSymbol]);
+        [globalScopeStack popScope];
+        NSLog(@"binding %@", [globalScopeStack bindingForSymbol:firstSymbol]);
     }
     return 0;
 }

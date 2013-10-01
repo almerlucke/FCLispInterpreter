@@ -18,7 +18,7 @@
 /**
  *  New symbols should be created via genSym, the only one calling this method should be FCLispEnvironment
  *
- *  @param name : the symbol name (is converted to uppercase)
+ *  @param name The symbol name (is converted to uppercase)
  *
  *  @return symbol object
  */
@@ -27,7 +27,7 @@
 /**
  *  Generate a symbol, this method is redirected to FCLispEnvironment genSym
  *
- *  @param name : the symbol name (is converted to uppercase)
+ *  @param name The symbol name (is converted to uppercase)
  *
  *  @return symbol object
  */

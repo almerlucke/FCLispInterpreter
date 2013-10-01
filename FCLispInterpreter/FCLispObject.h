@@ -13,11 +13,11 @@
 @interface FCLispObject : NSObject
 
 /**
- *  Stub method, CAN be overwritten by subclasses to add buildin methods to the global scope
+ *  Stub method, CAN be overwritten by subclasses to add buildin methods or constants to the global scope
  *  This method is called when classes register with the environment via registerClass
  *
  *  @param environment FCLispEnvironment object
  */
-+ (void)addMethodsToEnvironment:(FCLispEnvironment *)environment;
++ (void)addGlobalBindingsToEnvironment:(FCLispEnvironment *)environment;
 
 @end
