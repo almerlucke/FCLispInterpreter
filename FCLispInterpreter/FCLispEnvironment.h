@@ -46,7 +46,7 @@
  *
  *  @return FCLispScopeStack object
  */
-+ (FCLispScopeStack *)defaultScopeStack;
++ (FCLispScopeStack *)mainScopeStack;
 
 /**
  *  Global scope, this SHOULD be the first entry in any scope stack object

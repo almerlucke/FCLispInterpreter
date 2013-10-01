@@ -33,7 +33,7 @@ int main(int argc, const char * argv[])
         }
         
         FCLispSymbol *firstSymbol = [FCLispSymbol genSym:@"first"];
-        FCLispScopeStack *globalScopeStack = [FCLispEnvironment defaultScopeStack];
+        FCLispScopeStack *globalScopeStack = [FCLispEnvironment mainScopeStack];
         [globalScopeStack addBinding:[FCLispSymbol genSym:@"check1"] forSymbol:firstSymbol];
         [globalScopeStack pushScope:nil];
         [globalScopeStack addBinding:[FCLispSymbol genSym:@"check2"] forSymbol:firstSymbol];

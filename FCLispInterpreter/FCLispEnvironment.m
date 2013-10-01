@@ -127,14 +127,14 @@
 
 #pragma mark - Scope
 
-- (FCLispScopeStack *)defaultScopeStack
+- (FCLispScopeStack *)mainScopeStack
 {
     return _scopeStack;
 }
 
-+ (FCLispScopeStack *)defaultScopeStack
++ (FCLispScopeStack *)mainScopeStack
 {
-    return [[self defaultEnvironment] defaultScopeStack];
+    return [[self defaultEnvironment] mainScopeStack];
 }
 
 - (NSMutableDictionary *)globalScope
