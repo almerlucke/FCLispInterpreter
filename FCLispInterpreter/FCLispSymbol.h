@@ -8,6 +8,10 @@
 
 #import "FCLispObject.h"
 
+
+/**
+ *  Symbols are first class lisp objects, but can also represent variable bindings
+ */
 @interface FCLispSymbol : FCLispObject
 
 /**

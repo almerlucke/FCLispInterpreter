@@ -16,6 +16,9 @@
 
 #pragma mark - Exceptions
 
+/**
+ *  Internal parser exception types
+ */
 typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 {
     FCLispParserExceptionTypeEndOfStreamBeforeEndOfComment,

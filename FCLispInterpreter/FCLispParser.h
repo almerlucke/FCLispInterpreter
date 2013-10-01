@@ -11,27 +11,85 @@
 #import "FCLispException.h"
 
 
+
+/**
+ *  Lisp parser, chop lisp syntax input into tokens
+ */
 @interface FCLispParser : NSObject
 
-#pragma mark - Init
-
-// init parser with string
+/**
+ *  Initialize parser with string
+ *
+ *  @param string
+ *
+ *  @return FCLispParser object
+ */
 - (id)initWithString:(NSString *)string;
-// init parser with data
+
+/**
+ *  Initialize parser with data
+ *
+ *  @param data
+ *
+ *  @return FCLispParser object
+ */
 - (id)initWithData:(NSData *)data;
-// init parse with file path
+
+/**
+ *  Initialize parser with file path
+ *
+ *  @param path
+ *
+ *  @return FCLispParser object
+ */
 - (id)initWithFileAtPath:(NSString *)path;
 
-// init class shortcuts
+/**
+ *  Class shortcut to create parser with string
+ *
+ *  @param string
+ *
+ *  @return FCLispParser object
+ */
 + (FCLispParser *)parserWithString:(NSString *)string;
+
+/**
+ *  Class shortcut to create parser with data
+ *
+ *  @param data
+ *
+ *  @return FCLispParser object
+ */
 + (FCLispParser *)parserWithData:(NSData *)data;
+
+/**
+ *  Class shortcut to create parser with file path
+ *
+ *  @param path
+ *
+ *  @return FCLispParser object
+ */
 + (FCLispParser *)parserWithFileAtPath:(NSString *)path;
 
-#pragma mark - Token
-// get next token from parser (nil if no more tokens are available)
+/**
+ *  Get next token from parser (nil if no more tokens are available)
+ *
+ *  @return FCLispParserToken object
+ */
 - (FCLispParserToken *)getToken;
 
+/**
+ *  Get current line count
+ *
+ *  @return Line count
+ */
 - (NSInteger)lineCount;
+
+/**
+ *  Get current char count (is reset when LF, CR or CRLF is encountered)
+ *
+ *  @return Char count
+ */
 - (NSInteger)charCount;
 
 @end

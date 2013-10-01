@@ -8,8 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+
 @class FCLispEnvironment;
 
+
+/**
+ *  Abstract lisp object class
+ */
 @interface FCLispObject : NSObject
 
 /**

@@ -13,6 +13,9 @@
 @class FCLispScopeStack;
 
 
+/**
+ *  The main lisp environment, holds symbols, global scope and main thread scope stack
+ */
 @interface FCLispEnvironment : NSObject
 
 /**
