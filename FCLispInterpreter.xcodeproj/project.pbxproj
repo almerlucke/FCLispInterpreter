@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CB3A5E1917FC8BD000C86FBB /* FCLispString.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E1817FC8BD000C86FBB /* FCLispString.m */; };
+		CB3A5E1C17FC8CB000C86FBB /* FCLispNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E1B17FC8CB000C86FBB /* FCLispNumber.m */; };
+		CB3A5E1F17FC93FA00C86FBB /* FCLispNIL.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */; };
+		CB3A5E2217FC9A0E00C86FBB /* FCLispT.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */; };
 		CB5BC89817F8CB7700084263 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5BC89717F8CB7700084263 /* Foundation.framework */; };
 		CB5BC89B17F8CB7700084263 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC89A17F8CB7700084263 /* main.m */; };
 		CB5BC89F17F8CB7700084263 /* FCLispInterpreter.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */; };
@@ -33,6 +37,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CB3A5E1717FC8BD000C86FBB /* FCLispString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispString.h; sourceTree = "<group>"; };
+		CB3A5E1817FC8BD000C86FBB /* FCLispString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispString.m; sourceTree = "<group>"; };
+		CB3A5E1A17FC8CB000C86FBB /* FCLispNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispNumber.h; sourceTree = "<group>"; };
+		CB3A5E1B17FC8CB000C86FBB /* FCLispNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispNumber.m; sourceTree = "<group>"; };
+		CB3A5E1D17FC93FA00C86FBB /* FCLispNIL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispNIL.h; sourceTree = "<group>"; };
+		CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispNIL.m; sourceTree = "<group>"; };
+		CB3A5E2017FC9A0E00C86FBB /* FCLispT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispT.h; sourceTree = "<group>"; };
+		CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispT.m; sourceTree = "<group>"; };
 		CB5BC89417F8CB7700084263 /* FCLispInterpreter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FCLispInterpreter; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB5BC89717F8CB7700084263 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CB5BC89A17F8CB7700084263 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -100,6 +112,14 @@
 				CBE0255717FB3D2500DF2F76 /* FCLispObject.m */,
 				CBE0255C17FB3E8F00DF2F76 /* FCLispSymbol.h */,
 				CBE0255D17FB3E8F00DF2F76 /* FCLispSymbol.m */,
+				CB3A5E1717FC8BD000C86FBB /* FCLispString.h */,
+				CB3A5E1817FC8BD000C86FBB /* FCLispString.m */,
+				CB3A5E1A17FC8CB000C86FBB /* FCLispNumber.h */,
+				CB3A5E1B17FC8CB000C86FBB /* FCLispNumber.m */,
+				CB3A5E1D17FC93FA00C86FBB /* FCLispNIL.h */,
+				CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */,
+				CB3A5E2017FC9A0E00C86FBB /* FCLispT.h */,
+				CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */,
 				CBE0255317FB3A3C00DF2F76 /* FCLispScopeStack.h */,
 				CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */,
 				CB5BC8AB17F8CF7F00084263 /* FCLispException.h */,
@@ -178,8 +198,12 @@
 				CBE0255517FB3A3C00DF2F76 /* FCLispScopeStack.m in Sources */,
 				CBE0255817FB3D2500DF2F76 /* FCLispObject.m in Sources */,
 				CBE0255B17FB3E7300DF2F76 /* FCLispEnvironment.m in Sources */,
+				CB3A5E1F17FC93FA00C86FBB /* FCLispNIL.m in Sources */,
+				CB3A5E2217FC9A0E00C86FBB /* FCLispT.m in Sources */,
+				CB3A5E1917FC8BD000C86FBB /* FCLispString.m in Sources */,
 				CB5BC8AD17F8CF7F00084263 /* FCLispException.m in Sources */,
 				CB5BC89B17F8CB7700084263 /* main.m in Sources */,
+				CB3A5E1C17FC8CB000C86FBB /* FCLispNumber.m in Sources */,
 				CB5BC8AA17F8CB9D00084263 /* FCLispParserToken.m in Sources */,
 				CB5BC8A917F8CB9D00084263 /* FCLispParser.m in Sources */,
 			);
