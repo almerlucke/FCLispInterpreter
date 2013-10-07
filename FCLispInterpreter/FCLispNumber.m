@@ -73,4 +73,14 @@ typedef union
     return [[self alloc] initWithFloatValue:floatValue];
 }
 
+- (NSString *)description
+{
+    NSString *desc = @"";
+    
+    if (_type == FCLispNumberTypeInteger) desc = [NSString stringWithFormat:@"%lld", _valueUnion.integerValue];
+    else if (_type == FCLispNumberTypeFloat) desc = [NSString stringWithFormat:@"%lf", _valueUnion.floatValue];
+    
+    return desc;
+}
+
 @end

@@ -8,6 +8,12 @@
 
 #import "FCLispObject.h"
 
+typedef NS_ENUM(NSInteger, FCLispSymbolType)
+{
+    FCLispSymbolTypeNormal = 0,
+    FCLispSymbolTypeReserved = 1,
+    FCLispSymbolTypeConstant = 2
+};
 
 /**
  *  Symbols are first class lisp objects, but can also represent variable bindings
@@ -18,6 +24,16 @@
  *  Name of symbol (read-only)
  */
 @property (nonatomic, readonly) NSString *name;
+
+/**
+ *  Symbol type (to specify reserved symbols for instance)
+ */
+@property (nonatomic) FCLispSymbolType type;
+
+/**
+ *  Reserved or constant value
+ */
+@property (nonatomic, strong) FCLispObject *value;
 
 /**
  *  New symbols should be created via genSym, the only one calling this method should be FCLispEnvironment

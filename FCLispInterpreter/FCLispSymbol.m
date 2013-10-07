@@ -21,6 +21,8 @@
 {
     if (self = [super init]) {
         _name = [name uppercaseString];
+        _type = FCLispSymbolTypeNormal;
+        _value = nil;
     }
     
     return self;

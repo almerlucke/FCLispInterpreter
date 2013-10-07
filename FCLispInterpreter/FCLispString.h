@@ -18,4 +18,13 @@
  */
 @property (nonatomic, copy) NSString *string;
 
+/**
+ *  Create a new lisp string
+ *
+ *  @param string
+ *
+ *  @return FCLispString object
+ */
++ (FCLispString *)stringWithString:(NSString *)string;
+
 @end
