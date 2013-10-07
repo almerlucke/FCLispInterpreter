@@ -13,14 +13,84 @@
 #import "FCLispSymbol.h"
 #import "FCLispNumber.h"
 #import "FCLispString.h"
+#import "FCLispCons.h"
+#import "FCLispNIL.h"
+#import "FCLispListBuilder.h"
+#import "FCLispException.h"
 
 
+/**
+ *  Internal interpreter exception types
+ */
+typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
+{
+    FCLispInterpreterExceptionTypeEmptyQuote,
+    FCLispInterpreterExceptionTypeUnmatchedParenthesis,
+    FCLispInterpreterExceptionTypeDoubleDottedList,
+    FCLispInterpreterExceptionTypeMultipleDottedListCdr,
+    FCLispInterpreterExceptionTypeDotOutsideListContext
+};
+
+
+
+/**
+ *  Interpreter exception class
+ */
+@interface FCLispInterpreterException : FCLispException
+
+@end
+
+@implementation FCLispInterpreterException
+
++ (NSString *)exceptionName
+{
+    return @"FCLispInterpreterException";
+}
+
++ (NSString *)reasonForType:(NSInteger)type andUserInfo:(NSDictionary *)userInfo
+{
+    NSString *reason = @"";
+    NSNumber *lineCount = [userInfo objectForKey:@"lineCount"];
+    
+    switch (type) {
+        case FCLispInterpreterExceptionTypeEmptyQuote:
+            reason = [NSString stringWithFormat:@"Line %@, empty quote", lineCount];
+            break;
+        case FCLispInterpreterExceptionTypeUnmatchedParenthesis:
+            reason = [NSString stringWithFormat:@"Line %@, unmatched parenthesis", lineCount];
+            break;
+        case FCLispInterpreterExceptionTypeDoubleDottedList:
+            reason = [NSString stringWithFormat:@"Line %@, double dotted list", lineCount];
+            break;
+        case FCLispInterpreterExceptionTypeMultipleDottedListCdr:
+            reason = [NSString stringWithFormat:@"Line %@, multiple cdr's for dotted list", lineCount];
+            break;
+        case FCLispInterpreterExceptionTypeDotOutsideListContext:
+            reason = [NSString stringWithFormat:@"Line %@, dot outside list context", lineCount];
+            break;
+        default:
+            break;
+    }
+    
+    return reason;
+}
+
+@end
+
+
+
+
+
+/**
+ *  Private interface
+ */
 @interface FCLispInterpreter ()
 {
     FCLispParser *_parser;
     FCLispScopeStack *_scopeStack;
 }
 @end
+
 
 @implementation FCLispInterpreter
 
@@ -36,7 +106,7 @@
     return self;
 }
 
-+ (id)interpretFile:(NSString *)filePath withScopeStack:(FCLispScopeStack *)scopeStack
++ (FCLispObject *)interpretFile:(NSString *)filePath withScopeStack:(FCLispScopeStack *)scopeStack
 {
     FCLispParser *parser = [[FCLispParser alloc] initWithFileAtPath:filePath];
     FCLispInterpreter *interpreter = [[FCLispInterpreter alloc] initWithParser:parser
@@ -45,7 +115,7 @@
     return [interpreter interpret];
 }
 
-+ (id)interpretData:(NSData *)data withScopeStack:(FCLispScopeStack *)scopeStack
++ (FCLispObject *)interpretData:(NSData *)data withScopeStack:(FCLispScopeStack *)scopeStack
 {
     FCLispParser *parser = [[FCLispParser alloc] initWithData:data];
     FCLispInterpreter *interpreter = [[FCLispInterpreter alloc] initWithParser:parser
@@ -54,7 +124,7 @@
     return [interpreter interpret];
 }
 
-+ (id)interpretString:(NSString *)string withScopeStack:(FCLispScopeStack *)scopeStack
++ (FCLispObject *)interpretString:(NSString *)string withScopeStack:(FCLispScopeStack *)scopeStack
 {
     NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
     FCLispParser *parser = [[FCLispParser alloc] initWithData:data];
@@ -65,6 +135,12 @@
 }
 
 #pragma mark - Inner workings
+
+- (NSDictionary *)lineInfo
+{
+    return @{@"lineCount": [NSNumber numberWithInteger:_parser.lineCount],
+             @"charCount": [NSNumber numberWithInteger:_parser.charCount]};
+}
 
 - (FCLispObject *)getLispSymbolWithToken:(FCLispParserToken *)token
 {
@@ -79,196 +155,178 @@
     return sym;
 }
 
-- (id)getLispFloatNumberWithToken:(FCLispParserToken *)token
+- (FCLispObject *)getLispFloatNumberWithToken:(FCLispParserToken *)token
 {
     // create a lisp float number
     return [FCLispNumber numberWithFloatValue:[token.value doubleValue]];
 }
 
-- (id)getLispIntegerNumberWithToken:(FCLispParserToken *)token
+- (FCLispObject *)getLispIntegerNumberWithToken:(FCLispParserToken *)token
 {
     // create a lisp integer number
     return [FCLispNumber numberWithIntegerValue:[token.value longLongValue]];
 }
 
-- (id)getLispStringWithToken:(FCLispParserToken *)token
+- (FCLispObject *)getLispStringWithToken:(FCLispParserToken *)token
 {
     // create a lisp string
     return [FCLispString stringWithString:token.value];
 }
 
-//- (id)getLispQuoteList
-//{
-//    FCLispListBuilder *listBuilder = [FCLispListBuilder listBuilder];
-//    
-//    // add quote symbol as first entry in list
-//    [listBuilder addCar:[_environment addSymbolWithName:@"quote"]];
-//    
-//    // get quoted value
-//    id value = [self getLispObject];
-//    
-//    if (!value) {
-//        // empty quote
-//        NSString *reason = @"Empty quote";
-//        NSException *exception = [NSException exceptionWithName:@"INTERPRETER quote"
-//                                                         reason:reason
-//                                                       userInfo:nil];
-//        @throw exception;
-//    }
-//    
-//    [listBuilder addCar:value];
-//    
-//    id returnValue = listBuilder.list;
-//    
-//    return returnValue;
-//}
-//
-//- (id)getLispList
-//{
-//    FCLispListBuilder *listBuilder = [FCLispListBuilder listBuilder];
-//    BOOL dotted = NO;
-//    BOOL dottedValueSet = NO;
-//    
-//    while (YES) {
-//        FCLispParserToken *token = [_parser getToken];
-//        
-//        if (!token) {
-//            // no close parenthesis found to match open parenthesis
-//            NSString *reason = @"Unmatched parenthesis";
-//            NSException *exception = [NSException exceptionWithName:@"INTERPRETER list"
-//                                                             reason:reason
-//                                                           userInfo:nil];
-//            @throw exception;
-//        } else {
-//            id value = nil;
-//            
-//            if (token.type == FCLispParserTokenTypeOpenList) {
-//                // get new list value
-//                value = [self getLispList];
-//            } else if (token.type == FCLispParserTokenTypeCloseList) {
-//                // close current list
-//                break;
-//            } else if (token.type == FCLispParserTokenTypeQuote) {
-//                // get quoted value
-//                value = [self getLispQuoteList];
-//            } else if (token.type == FCLispParserTokenTypeSymbol) {
-//                // get symbol value (symbol or reserved value)
-//                value = [self getLispSymbolWithToken:token];
-//            } else if (token.type == FCLispParserTokenTypeFloatNumber) {
-//                value = [self getLispFloatNumberWithToken:token];
-//            } else if (token.type == FCLispParserTokenTypeIntegerNumber) {
-//                value = [self getLispIntegerNumberWithToken:token];
-//            } else if (token.type == FCLispParserTokenTypeDot) {
-//                // dotted list, double check if already dotted
-//                if (dotted) {
-//                    NSString *reason = @"Double dotted list";
-//                    NSException *exception = [NSException exceptionWithName:@"INTERPRETER list"
-//                                                                     reason:reason
-//                                                                   userInfo:nil];
-//                    @throw exception;
-//                }
-//                dotted = YES;
-//            } else if (token.type == FCLispParserTokenTypeString) {
-//                // create a lisp string
-//                value = [self getLispStringWithToken:token];
-//            }
-//            
-//            if (dotted) {
-//                // if dotted, check if cdr is set
-//                if (dottedValueSet) {
-//                    NSString *reason = @"Dotted list cdr is already set";
-//                    NSException *exception = [NSException exceptionWithName:@"INTERPRETER list"
-//                                                                     reason:reason
-//                                                                   userInfo:nil];
-//                    @throw exception;
-//                } else if (value) {
-//                    // set cdr to value and set dottedValueSet to YES, don't allow dotted list cdr reassign
-//                    dottedValueSet = YES;
-//                    [listBuilder addCdr:value];
-//                }
-//            } else {
-//                [listBuilder addCar:value];
-//            }
-//        }
-//    }
-//    
-//    id returnValue = listBuilder.list;
-//    
-//    return returnValue;
-//}
-//
-//- (id)getLispObject
-//{
-//    id value = nil;
-//    FCLispParserToken *token = [_parser getToken];
-//    
-//    if (token) {
-//        switch (token.type) {
-//            case FCLispParserTokenTypeOpenList:
-//                // get a list object
-//                value = [self getLispList];
-//                break;
-//            case FCLispParserTokenTypeCloseList:
-//                // unmatched close list token
-//                {
-//                    NSString *reason = @"Unmatched parenthesis";
-//                    NSException *exception = [NSException exceptionWithName:@"INTERPRETER list"
-//                                                                     reason:reason
-//                                                                   userInfo:nil];
-//                    @throw exception;
-//                }
-//                break;
-//            case FCLispParserTokenTypeQuote:
-//                // get quoted list
-//                value = [self getLispQuoteList];
-//                break;
-//            case FCLispParserTokenTypeSymbol:
-//                // get symbol (or reserved symbol value)
-//                value = [self getLispSymbolWithToken:token];
-//                break;
-//            case FCLispParserTokenTypeFloatNumber:
-//                value = [self getLispFloatNumberWithToken:token];
-//                break;
-//            case FCLispParserTokenTypeIntegerNumber:
-//                value = [self getLispIntegerNumberWithToken:token];
-//                break;
-//            case FCLispParserTokenTypeDot:
-//                // dot can only appear in list context
-//                {
-//                    NSString *reason = @"Dot found outside list context";
-//                    NSException *exception = [NSException exceptionWithName:@"INTERPRETER dot"
-//                                                                     reason:reason
-//                                                                   userInfo:nil];
-//                    @throw exception;
-//                }
-//                break;
-//            case FCLispParserTokenTypeString:
-//                // lisp string
-//                value = [self getLispStringWithToken:token];
-//                break;
-//        }
-//    }
-//    
-//    return value;
-//}
-//
+- (FCLispObject *)getLispQuoteList
+{
+    FCLispListBuilder *listBuilder = [FCLispListBuilder listBuilder];
+    
+    // add quote symbol as first entry in list
+    [listBuilder addCar:[FCLispSymbol genSym:@"quote"]];
+    
+    // get quoted value
+    FCLispObject *value = [self getLispObject];
+    
+    if (!value) {
+        @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeEmptyQuote
+                                                    userInfo:[self lineInfo]];
+    }
+    
+    [listBuilder addCar:value];
+    
+    FCLispObject *returnValue = [listBuilder lispList];
+    
+    return returnValue;
+}
+
+
+- (id)getLispList
+{
+    FCLispListBuilder *listBuilder = [FCLispListBuilder listBuilder];
+    BOOL dotted = NO;
+    BOOL dottedValueSet = NO;
+    
+    while (YES) {
+        FCLispParserToken *token = [_parser getToken];
+        
+        if (!token) {
+            // no close parenthesis found to match open parenthesis
+            @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeUnmatchedParenthesis
+                                                        userInfo:[self lineInfo]];
+        } else {
+            FCLispObject *value = nil;
+            
+            if (token.type == FCLispParserTokenTypeOpenList) {
+                // get new list value
+                value = [self getLispList];
+            } else if (token.type == FCLispParserTokenTypeCloseList) {
+                // close current list
+                break;
+            } else if (token.type == FCLispParserTokenTypeQuote) {
+                // get quoted value
+                value = [self getLispQuoteList];
+            } else if (token.type == FCLispParserTokenTypeSymbol) {
+                // get symbol value (symbol or reserved value)
+                value = [self getLispSymbolWithToken:token];
+            } else if (token.type == FCLispParserTokenTypeFloatNumber) {
+                value = [self getLispFloatNumberWithToken:token];
+            } else if (token.type == FCLispParserTokenTypeIntegerNumber) {
+                value = [self getLispIntegerNumberWithToken:token];
+            } else if (token.type == FCLispParserTokenTypeDot) {
+                // dotted list, double check if already dotted
+                if (dotted) {
+                    @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeDoubleDottedList
+                                                                userInfo:[self lineInfo]];
+                }
+                dotted = YES;
+            } else if (token.type == FCLispParserTokenTypeString) {
+                // create a lisp string
+                value = [self getLispStringWithToken:token];
+            }
+            
+            if (dotted) {
+                // if dotted, check if cdr is set
+                if (dottedValueSet) {
+                    @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeMultipleDottedListCdr
+                                                                userInfo:[self lineInfo]];
+                } else if (value) {
+                    // set cdr to value and set dottedValueSet to YES, don't allow dotted list cdr reassign
+                    dottedValueSet = YES;
+                    [listBuilder addCdr:value];
+                }
+            } else {
+                [listBuilder addCar:value];
+            }
+        }
+    }
+    
+    return [listBuilder lispList];
+}
+
+- (id)getLispObject
+{
+    FCLispObject *value = nil;
+    FCLispParserToken *token = [_parser getToken];
+    
+    if (token) {
+        switch (token.type) {
+            case FCLispParserTokenTypeOpenList:
+                // get a list object
+                value = [self getLispList];
+                break;
+            case FCLispParserTokenTypeCloseList:
+                // unmatched close list token
+                {
+                    @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeUnmatchedParenthesis
+                                                                userInfo:[self lineInfo]];
+                }
+                break;
+            case FCLispParserTokenTypeQuote:
+                // get quoted list
+                value = [self getLispQuoteList];
+                break;
+            case FCLispParserTokenTypeSymbol:
+                // get symbol (or reserved symbol value)
+                value = [self getLispSymbolWithToken:token];
+                break;
+            case FCLispParserTokenTypeFloatNumber:
+                value = [self getLispFloatNumberWithToken:token];
+                break;
+            case FCLispParserTokenTypeIntegerNumber:
+                value = [self getLispIntegerNumberWithToken:token];
+                break;
+            case FCLispParserTokenTypeDot:
+                // dot can only appear in list context
+                {
+                    @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeDotOutsideListContext
+                                                                userInfo:[self lineInfo]];
+                }
+                break;
+            case FCLispParserTokenTypeString:
+                // lisp string
+                value = [self getLispStringWithToken:token];
+                break;
+            default:
+                break;
+        }
+    }
+    
+    return value;
+}
+
 
 // interpret parser tokens in given lisp environment
-- (id)interpret
+- (FCLispObject *)interpret
 {
-    return nil;
-//    id returnValue = [FCLispNIL NIL];
-//    
-//    while (YES) {
-//        id lispObject = [self getLispObject];
-//        if (lispObject) {
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    while (YES) {
+        FCLispObject *lispObject = [self getLispObject];
+        if (lispObject) {
 //            returnValue = [_environment eval:lispObject];
-//        } else {
-//            break;
-//        }
-//    }
-//    
-//    return returnValue;
+            returnValue = nil;
+        } else {
+            break;
+        }
+    }
+    
+    return returnValue;
 }
 
 @end

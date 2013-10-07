@@ -10,12 +10,13 @@
 
 @class FCLispScopeStack;
 @class FCLispParser;
+@class FCLispObject;
 
 @interface FCLispInterpreter : NSObject
 
 // parse and interpret lisp data in given environment
-+ (id)interpretFile:(NSString *)filePath withScopeStack:(FCLispScopeStack *)scopeStack;
-+ (id)interpretData:(NSData *)data withScopeStack:(FCLispScopeStack *)scopeStack;
-+ (id)interpretString:(NSString *)string withScopeStack:(FCLispScopeStack *)scopeStack;
++ (FCLispObject *)interpretFile:(NSString *)filePath withScopeStack:(FCLispScopeStack *)scopeStack;
++ (FCLispObject *)interpretData:(NSData *)data withScopeStack:(FCLispScopeStack *)scopeStack;
++ (FCLispObject *)interpretString:(NSString *)string withScopeStack:(FCLispScopeStack *)scopeStack;
 
 @end
