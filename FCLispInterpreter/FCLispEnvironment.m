@@ -10,6 +10,9 @@
 #import "FCLispSymbol.h"
 #import "FCLispObject.h"
 #import "FCLispScopeStack.h"
+#import "FCLispCons.h"
+#import "FCLispNIL.h"
+#import "FCLispBuildinFunction.h"
 
 
 /**
@@ -71,6 +74,9 @@
     
     // create main thread scope stack
     _scopeStack = [FCLispScopeStack scopeStackWithScope:_globalScope];
+    
+    // add globals (buildin functions and constants)
+    [self addGlobals];
 }
 
 - (id)init
@@ -146,5 +152,56 @@
 {
     return [[self defaultEnvironment] globalScope];
 }
+
+
+
+#pragma mark - Buildin Functions
+
+- (void)addGlobals
+{
+    FCLispSymbol *global = nil;
+    
+    global = [self genSym:@"exit"];
+    global.type = FCLispSymbolTypeReserved;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionExit:) target:self];
+    
+    global = [self genSym:@"quote"];
+    global.type = FCLispSymbolTypeReserved;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionQuote:) target:self evalArgs:NO];
+}
+
+- (FCLispObject *)buildinFunctionExit:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc != 0) {
+        NSException *exception = [NSException exceptionWithName:@"EXIT exception"
+                                                         reason:@"EXIT has no arguments"
+                                                       userInfo:nil];
+        @throw exception;
+    }
+    
+    exit(0);
+    
+    return [FCLispNIL NIL];
+}
+
+- (FCLispObject *)buildinFunctionQuote:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc != 1) {
+        NSString *reason = [NSString stringWithFormat:@"QUOTE expected 1 argument, %ld given", argc];
+        NSException *exception = [NSException exceptionWithName:@"QUOTE exception"
+                                                         reason:reason
+                                                       userInfo:nil];
+        @throw exception;
+    }
+    
+    return args.car;
+}
+
 
 @end

@@ -17,6 +17,7 @@
 #import "FCLispNIL.h"
 #import "FCLispListBuilder.h"
 #import "FCLispException.h"
+#import "FCLispEvaluator.h"
 
 
 /**
@@ -319,8 +320,7 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
     while (YES) {
         FCLispObject *lispObject = [self getLispObject];
         if (lispObject) {
-//            returnValue = [_environment eval:lispObject];
-            returnValue = nil;
+            returnValue = [FCLispEvaluator eval:lispObject withScopeStack:_scopeStack];
         } else {
             break;
         }
