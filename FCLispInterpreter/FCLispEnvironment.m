@@ -12,7 +12,11 @@
 #import "FCLispScopeStack.h"
 #import "FCLispCons.h"
 #import "FCLispNIL.h"
+#import "FCLispT.h"
+#import "FCLispNumber.h"
+#import "FCLispString.h"
 #import "FCLispBuildinFunction.h"
+#import "FCLispEvaluator.h"
 
 
 /**
@@ -30,11 +34,6 @@
      *  in serial on a dedicated queue
      */
     dispatch_queue_t _symbolCreationQueue;
-    
-    /**
-     *  Global scope dictionary, this SHOULD be the first entry into any scope stack
-     */
-    NSMutableDictionary *_globalScope;
     
     /**
      *  Default (main thread) scope stack
@@ -61,28 +60,26 @@
     return sDefaultEnvironment;
 }
 
-- (void)initialize
-{
-    // symbol dictionary
-    _symbols = [NSMutableDictionary dictionary];
-    
-    // create serial symbol creation queue
-    _symbolCreationQueue = dispatch_queue_create("kFCLispEnvironmentSymbolQueue", DISPATCH_QUEUE_SERIAL);
-    
-    // create global scope
-    _globalScope = [NSMutableDictionary dictionary];
-    
-    // create main thread scope stack
-    _scopeStack = [FCLispScopeStack scopeStackWithScope:_globalScope];
-    
-    // add globals (buildin functions and constants)
-    [self addGlobals];
-}
-
 - (id)init
 {
     if ((self = [super init])) {
-        [self initialize];
+        // symbol dictionary
+        _symbols = [NSMutableDictionary dictionary];
+        
+        // create serial symbol creation queue
+        _symbolCreationQueue = dispatch_queue_create("kFCLispEnvironmentSymbolQueue", DISPATCH_QUEUE_SERIAL);
+        
+        // create main thread scope stack
+        _scopeStack = [FCLispScopeStack scopeStack];
+        
+        // add buildin functions, reserved symbols, literals, and constants
+        [self addGlobals];
+         
+        // register default classes
+        [self registerClass:[FCLispSymbol class]];
+        [self registerClass:[FCLispNumber class]];
+        [self registerClass:[FCLispCons class]];
+        [self registerClass:[FCLispString class]];
     }
     
     return self;
@@ -123,11 +120,16 @@
 
 #pragma mark - Register
 
-+ (void)registerClass:(Class)theClass
+- (void)registerClass:(Class)theClass
 {
     if ([theClass isSubclassOfClass:[FCLispObject class]]) {
-        [theClass addGlobalBindingsToEnvironment:[self defaultEnvironment]];
+        [theClass addGlobalBindingsToEnvironment:self];
     }
+}
+
++ (void)registerClass:(Class)theClass
+{
+    [[self defaultEnvironment] registerClass:theClass];
 }
 
 
@@ -143,17 +145,9 @@
     return [[self defaultEnvironment] mainScopeStack];
 }
 
-- (NSMutableDictionary *)globalScope
-{
-    return _globalScope;
-}
-
-+ (NSMutableDictionary *)globalScope
-{
-    return [[self defaultEnvironment] globalScope];
-}
 
 
+#pragma mark - Buildin Functions
 
 #pragma mark - Buildin Functions
 
@@ -161,13 +155,25 @@
 {
     FCLispSymbol *global = nil;
     
+    global = [self genSym:@"nil"];
+    global.type = FCLispSymbolTypeLiteral;
+    global.value = [FCLispNIL NIL];
+    
+    global = [self genSym:@"t"];
+    global.type = FCLispSymbolTypeLiteral;
+    global.value = [FCLispT T];
+    
     global = [self genSym:@"exit"];
-    global.type = FCLispSymbolTypeReserved;
+    global.type = FCLispSymbolTypeBuildin;
     global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionExit:) target:self];
     
     global = [self genSym:@"quote"];
-    global.type = FCLispSymbolTypeReserved;
+    global.type = FCLispSymbolTypeBuildin;
     global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionQuote:) target:self evalArgs:NO];
+    
+    global = [self genSym:@"="];
+    global.type = FCLispSymbolTypeBuildin;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSetf:) target:self evalArgs:NO];
 }
 
 - (FCLispObject *)buildinFunctionExit:(NSDictionary *)callData
@@ -203,5 +209,45 @@
     return args.car;
 }
 
+- (FCLispObject *)buildinFunctionSetf:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc != 2) {
+        NSException *exception = [NSException exceptionWithName:@"= exception"
+                                                         reason:@"= expected 2 arguments"
+                                                       userInfo:nil];
+        @throw exception;
+    }
+    
+    FCLispObject *setfPlace = args.car;
+    FCLispObject *returnValue = nil;
+    
+    if ([setfPlace isKindOfClass:[FCLispSymbol class]]) {
+        // handle setf of symbol here
+        FCLispSymbol *sym = (FCLispSymbol *)setfPlace;
+        
+        if (sym.type != FCLispSymbolTypeNormal) {
+            NSString *reason = @"Can't assign to a reserved symbol";
+            NSException *exception = [NSException exceptionWithName:@"= exception"
+                                                             reason:reason
+                                                           userInfo:nil];
+            @throw exception;
+        }
+        
+        // evaluate value to assign to symbol
+        returnValue = [FCLispEvaluator eval:((FCLispCons *)args.cdr).car withScopeStack:scopeStack];
+        
+        // set binding
+        [scopeStack setBinding:returnValue forSymbol:sym];
+    } else {
+        // try to eval special setf function form (for instance (= (car (cons 1 2)) 3))
+        returnValue = [FCLispEvaluator eval:setfPlace value:((FCLispCons *)args.cdr).car withScopeStack:scopeStack];
+    }
+    
+    return returnValue;
+}
 
 @end

@@ -50,7 +50,7 @@
 
 + (FCLispScopeStack *)scopeStack
 {
-    return [[self alloc] initWithScope:[FCLispEnvironment globalScope]];
+    return [[self alloc] initWithScope:[NSMutableDictionary dictionary]];
 }
 
 + (FCLispScopeStack *)scopeStackWithScope:(NSMutableDictionary *)scope

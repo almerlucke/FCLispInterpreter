@@ -11,8 +11,10 @@
 typedef NS_ENUM(NSInteger, FCLispSymbolType)
 {
     FCLispSymbolTypeNormal = 0,
-    FCLispSymbolTypeReserved = 1,
-    FCLispSymbolTypeConstant = 2
+    FCLispSymbolTypeLiteral = 1,
+    FCLispSymbolTypeConstant = 2,
+    FCLispSymbolTypeBuildin = 3,
+    FCLispSymbolTypeReserved = 4
 };
 
 /**

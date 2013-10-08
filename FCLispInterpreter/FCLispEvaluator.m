@@ -15,6 +15,59 @@
 #import "FCLispScopeStack.h"
 #import "FCLispFunction.h"
 #import "FCLispBuildinFunction.h"
+#import "FCLispException.h"
+
+
+/**
+ *  Internal evaluator exception types
+ */
+typedef NS_ENUM(NSInteger, FCLispEvaluatorExceptionType)
+{
+    FCLispEvaluatorExceptionTypeUnboundVariable,
+    FCLispEvaluatorExceptionTypeFuncallOnNonFunction,
+    FCLispEvaluatorExceptionTypeSetfArgumentCantBeSet
+};
+
+
+
+/**
+ *  Evaluator exception class
+ */
+@interface FCLispEvaluatorException : FCLispException
+
+@end
+
+@implementation FCLispEvaluatorException
+
++ (NSString *)exceptionName
+{
+    return @"FCLispEvaluatorException";
+}
+
++ (NSString *)reasonForType:(NSInteger)type andUserInfo:(NSDictionary *)userInfo
+{
+    NSString *reason = @"";
+   
+    switch (type) {
+        case FCLispEvaluatorExceptionTypeUnboundVariable:
+            reason = [NSString stringWithFormat:@"Unbound variable %@", [userInfo objectForKey:@"value"]];
+            break;
+        case FCLispEvaluatorExceptionTypeFuncallOnNonFunction:
+            reason = [NSString stringWithFormat:@"Funcall of %@, which is a not a function", [userInfo objectForKey:@"value"]];
+            break;
+        case FCLispEvaluatorExceptionTypeSetfArgumentCantBeSet:
+            reason = [NSString stringWithFormat:@"%@ can not be assigned to", [userInfo objectForKey:@"value"]];
+            break;
+        default:
+            break;
+    }
+    
+    return reason;
+}
+
+@end
+
+
 
 
 @implementation FCLispEvaluator
@@ -31,11 +84,8 @@
         returnValue = symbol.value;
         if (!returnValue) {
             // unbound variable so raise an error
-            NSString *reason = [NSString stringWithFormat:@"Unbound variable %@", symbol.name];
-            NSException *exception = [NSException exceptionWithName:@"Eval exception"
-                                                             reason:reason
-                                                           userInfo:nil];
-            @throw exception;
+            @throw [FCLispEvaluatorException exceptionWithType:FCLispEvaluatorExceptionTypeUnboundVariable
+                                                      userInfo:@{@"value": symbol.name}];
         }
     }
     
@@ -65,14 +115,11 @@
             args = [listBuilder lispList];
         }
         
-        // evaluate function with args and environment
+        // evaluate function with args and scope stack
         returnValue = [fun eval:args scopeStack:scopeStack];
     } else {
-        NSString *reason = [NSString stringWithFormat:@"Funcall of %@ which is a non-function.", fun];
-        NSException *exception = [NSException exceptionWithName:@"Eval exception"
-                                                         reason:reason
-                                                       userInfo:nil];
-        @throw exception;
+        @throw [FCLispEvaluatorException exceptionWithType:FCLispEvaluatorExceptionTypeFuncallOnNonFunction
+                                                  userInfo:@{@"value": fun}];
     }
     
     return returnValue;
@@ -96,11 +143,7 @@
 
 + (FCLispObject *)eval:(FCLispObject *)obj value:(FCLispObject *)value withScopeStack:(FCLispScopeStack *)scopeStack
 {
-    id returnValue = nil;
-    NSString *reason = [NSString stringWithFormat:@"SETF argument %@ can not be set", obj];
-    NSException *setfEvalException = [NSException exceptionWithName:@"SETF exception"
-                                                             reason:reason
-                                                           userInfo:nil];
+    FCLispObject *returnValue = nil;
     
     if ([obj isKindOfClass:[FCLispCons class]]) {
         FCLispCons *cons = (FCLispCons *)obj;
@@ -125,13 +168,15 @@
                 args = [listBuilder lispList];
             }
             
-            // evaluate buildin function with args, setf value and environment
+            // evaluate buildin function with args, setf value and scope stack
             returnValue = [fun eval:args value:value scopeStack:scopeStack];
         } else {
-            @throw setfEvalException;
+            @throw [FCLispEvaluatorException exceptionWithType:FCLispEvaluatorExceptionTypeSetfArgumentCantBeSet
+                                                      userInfo:@{@"value": fun}];
         }
     } else {
-        @throw setfEvalException;
+        @throw [FCLispEvaluatorException exceptionWithType:FCLispEvaluatorExceptionTypeSetfArgumentCantBeSet
+                                                  userInfo:@{@"value": obj}];
     }
     
     return returnValue;

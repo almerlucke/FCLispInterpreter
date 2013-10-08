@@ -147,8 +147,8 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
 {
     FCLispSymbol *sym = [FCLispSymbol genSym:token.value];
     
-    // if constant or reserved
-    if (sym.type != FCLispSymbolTypeNormal) {
+    // if literal return value immediately
+    if (sym.type == FCLispSymbolTypeLiteral) {
         return sym.value;
     }
     

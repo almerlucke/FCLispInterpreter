@@ -14,7 +14,7 @@
 
 
 /**
- *  The main lisp environment, holds symbols, global scope and main thread scope stack
+ *  The main lisp environment, holds symbols, and main thread scope stack
  */
 @interface FCLispEnvironment : NSObject
 
@@ -35,7 +35,7 @@
 + (FCLispSymbol *)genSym:(NSString *)name;
 
 /**
- *  Register a class with the environment
+ *  Register a class with the default environment
  *
  *  @param theClass MUST be a FCLispObject subclass
  */
@@ -47,12 +47,5 @@
  *  @return FCLispScopeStack object
  */
 + (FCLispScopeStack *)mainScopeStack;
-
-/**
- *  Global scope, this SHOULD be the first entry in any scope stack object
- *
- *  @return NSMutableDictionary representing the current global scope
- */
-+ (NSMutableDictionary *)globalScope;
 
 @end

@@ -8,6 +8,10 @@
 
 #import "FCLispBuildinFunction.h"
 #import "FCLispCons.h"
+#import "FCLispSymbol.h"
+#import "FCLispNIL.h"
+#import "FCLispT.h"
+
 
 @implementation FCLispBuildinFunction
 
