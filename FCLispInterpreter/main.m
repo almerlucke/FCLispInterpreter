@@ -26,11 +26,11 @@ int main(int argc, const char * argv[])
                 printf("%s\n> ", [[obj description] cStringUsingEncoding:NSUTF8StringEncoding]);
             }
             @catch (FCLispException *exception) {
-                printf("%s - %s\n> ", [exception.name cStringUsingEncoding:NSUTF8StringEncoding],
+                printf("%s: %s\n> ", [exception.name cStringUsingEncoding:NSUTF8StringEncoding],
                        [exception.reason cStringUsingEncoding:NSUTF8StringEncoding]);
             }
             @catch (NSException *exception) {
-                printf("%s - %s\n> ", [exception.name cStringUsingEncoding:NSUTF8StringEncoding],
+                printf("%s: %s\n> ", [exception.name cStringUsingEncoding:NSUTF8StringEncoding],
                        [exception.reason cStringUsingEncoding:NSUTF8StringEncoding]);
             }
         }

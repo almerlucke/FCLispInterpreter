@@ -17,7 +17,63 @@
 #import "FCLispString.h"
 #import "FCLispBuildinFunction.h"
 #import "FCLispEvaluator.h"
+#import "FCLispException.h"
 
+
+/**
+ *  Lisp environment error types
+ */
+typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
+{
+    FCLispEnvironmentExceptionTypeNumArguments,
+    FCLispEnvironmentExceptionTypeAssignmentToReservedSymbol
+};
+
+
+#pragma mark - FClispEnvironmentException
+
+/**
+ *  FClispEnvironmentException
+ */
+@interface FCLispEnvironmentException : FCLispException
+
+@end
+
+@implementation FCLispEnvironmentException
+
++ (NSString *)exceptionName
+{
+    return @"FCLispEnvironmentException";
+}
+
++ (NSString *)reasonForType:(NSInteger)type andUserInfo:(NSDictionary *)userInfo
+{
+    NSString *reason = @"";
+    
+    switch (type) {
+        case FCLispEnvironmentExceptionTypeNumArguments:
+        {
+            NSString *functionName = [userInfo objectForKey:@"functionName"];
+            NSNumber *numExpected = [userInfo objectForKey:@"numExpected"];
+            NSNumber *numGiven = [userInfo objectForKey:@"numGiven"];
+            reason = [NSString stringWithFormat:@"%@ expected at least %@ arguments, %@ given", functionName, numExpected, numGiven];
+            break;
+        }
+        case FCLispEnvironmentExceptionTypeAssignmentToReservedSymbol:
+            reason = [NSString stringWithFormat:@"Can't assign to reserved symbol %@", [userInfo objectForKey:@"symbolName"]];
+            break;
+        default:
+            break;
+    }
+    
+    return reason;
+}
+
+@end
+
+
+
+#pragma mark - FCLispEnvironment
 
 /**
  *  Private interface
@@ -149,8 +205,6 @@
 
 #pragma mark - Buildin Functions
 
-#pragma mark - Buildin Functions
-
 - (void)addGlobals
 {
     FCLispSymbol *global = nil;
@@ -178,16 +232,6 @@
 
 - (FCLispObject *)buildinFunctionExit:(NSDictionary *)callData
 {
-    FCLispCons *args = [callData objectForKey:@"args"];
-    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
-    
-    if (argc != 0) {
-        NSException *exception = [NSException exceptionWithName:@"EXIT exception"
-                                                         reason:@"EXIT has no arguments"
-                                                       userInfo:nil];
-        @throw exception;
-    }
-    
     exit(0);
     
     return [FCLispNIL NIL];
@@ -198,12 +242,11 @@
     FCLispCons *args = [callData objectForKey:@"args"];
     NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
     
-    if (argc != 1) {
-        NSString *reason = [NSString stringWithFormat:@"QUOTE expected 1 argument, %ld given", argc];
-        NSException *exception = [NSException exceptionWithName:@"QUOTE exception"
-                                                         reason:reason
-                                                       userInfo:nil];
-        @throw exception;
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"QUOTE",
+                                                               @"numExpected" : @1,
+                                                               @"numGiven" : [NSNumber numberWithInteger:argc]}];
     }
     
     return args.car;
@@ -216,10 +259,10 @@
     NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
     
     if (argc != 2) {
-        NSException *exception = [NSException exceptionWithName:@"= exception"
-                                                         reason:@"= expected 2 arguments"
-                                                       userInfo:nil];
-        @throw exception;
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"=",
+                                                               @"numExpected" : @2,
+                                                               @"numGiven" : [NSNumber numberWithInteger:argc]}];
     }
     
     FCLispObject *setfPlace = args.car;
@@ -230,11 +273,8 @@
         FCLispSymbol *sym = (FCLispSymbol *)setfPlace;
         
         if (sym.type != FCLispSymbolTypeNormal) {
-            NSString *reason = @"Can't assign to a reserved symbol";
-            NSException *exception = [NSException exceptionWithName:@"= exception"
-                                                             reason:reason
-                                                           userInfo:nil];
-            @throw exception;
+            @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeAssignmentToReservedSymbol
+                                                        userInfo:@{@"symbolName" : sym.name}];
         }
         
         // evaluate value to assign to symbol
