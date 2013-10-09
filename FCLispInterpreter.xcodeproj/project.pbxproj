@@ -17,6 +17,7 @@
 		CB5BC8A917F8CB9D00084263 /* FCLispParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8A617F8CB9D00084263 /* FCLispParser.m */; };
 		CB5BC8AA17F8CB9D00084263 /* FCLispParserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */; };
 		CB5BC8AD17F8CF7F00084263 /* FCLispException.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8AC17F8CF7F00084263 /* FCLispException.m */; };
+		CB936D461805D44500C807F5 /* NSArray+FCLisp.m in Sources */ = {isa = PBXBuildFile; fileRef = CB936D451805D44500C807F5 /* NSArray+FCLisp.m */; };
 		CB98A05418046B37007880F7 /* FCLispFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB98A05318046B37007880F7 /* FCLispFunction.m */; };
 		CB98A05718046BDD007880F7 /* FCLispBuildinFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB98A05618046BDD007880F7 /* FCLispBuildinFunction.m */; };
 		CB98A05A18046DDC007880F7 /* FCLispEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = CB98A05918046DDC007880F7 /* FCLispEvaluator.m */; };
@@ -62,6 +63,8 @@
 		CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispParserToken.m; sourceTree = "<group>"; };
 		CB5BC8AB17F8CF7F00084263 /* FCLispException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispException.h; sourceTree = "<group>"; };
 		CB5BC8AC17F8CF7F00084263 /* FCLispException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispException.m; sourceTree = "<group>"; };
+		CB936D441805D44500C807F5 /* NSArray+FCLisp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+FCLisp.h"; sourceTree = "<group>"; };
+		CB936D451805D44500C807F5 /* NSArray+FCLisp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+FCLisp.m"; sourceTree = "<group>"; };
 		CB98A05218046B37007880F7 /* FCLispFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispFunction.h; sourceTree = "<group>"; };
 		CB98A05318046B37007880F7 /* FCLispFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispFunction.m; sourceTree = "<group>"; };
 		CB98A05518046BDD007880F7 /* FCLispBuildinFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispBuildinFunction.h; sourceTree = "<group>"; };
@@ -160,6 +163,8 @@
 				CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */,
 				CB3A5E2017FC9A0E00C86FBB /* FCLispT.h */,
 				CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */,
+				CB936D441805D44500C807F5 /* NSArray+FCLisp.h */,
+				CB936D451805D44500C807F5 /* NSArray+FCLisp.m */,
 				CB5BC89A17F8CB7700084263 /* main.m */,
 				CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */,
 				CB5BC89C17F8CB7700084263 /* Supporting Files */,
@@ -231,6 +236,7 @@
 				CB98A05418046B37007880F7 /* FCLispFunction.m in Sources */,
 				CBE0255517FB3A3C00DF2F76 /* FCLispScopeStack.m in Sources */,
 				CBC1DD0218032763003E2AE9 /* FCLispListBuilder.m in Sources */,
+				CB936D461805D44500C807F5 /* NSArray+FCLisp.m in Sources */,
 				CBE0255817FB3D2500DF2F76 /* FCLispObject.m in Sources */,
 				CBE0255B17FB3E7300DF2F76 /* FCLispEnvironment.m in Sources */,
 				CB3A5E1F17FC93FA00C86FBB /* FCLispNIL.m in Sources */,

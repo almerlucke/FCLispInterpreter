@@ -25,6 +25,8 @@ typedef NS_ENUM(NSInteger, FCLispExceptionType)
  */
 @interface FCLispException : NSException
 
+@property (nonatomic) NSInteger exceptionType;
+
 /**
  *  Create a lisp exception with type
  *

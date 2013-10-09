@@ -18,26 +18,10 @@
 #import "FCLispBuildinFunction.h"
 #import "FCLispEvaluator.h"
 #import "FCLispException.h"
-
-
-/**
- *  Lisp environment error types
- */
-typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
-{
-    FCLispEnvironmentExceptionTypeNumArguments,
-    FCLispEnvironmentExceptionTypeAssignmentToReservedSymbol
-};
+#import "NSArray+FCLisp.h"
 
 
 #pragma mark - FClispEnvironmentException
-
-/**
- *  FClispEnvironmentException
- */
-@interface FCLispEnvironmentException : FCLispException
-
-@end
 
 @implementation FCLispEnvironmentException
 
@@ -51,16 +35,20 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     NSString *reason = @"";
     
     switch (type) {
-        case FCLispEnvironmentExceptionTypeNumArguments:
-        {
+        case FCLispEnvironmentExceptionTypeNumArguments: {
             NSString *functionName = [userInfo objectForKey:@"functionName"];
             NSNumber *numExpected = [userInfo objectForKey:@"numExpected"];
-            NSNumber *numGiven = [userInfo objectForKey:@"numGiven"];
-            reason = [NSString stringWithFormat:@"%@ expected at least %@ arguments, %@ given", functionName, numExpected, numGiven];
+            reason = [NSString stringWithFormat:@"%@ expected at least %@ argument(s)", functionName, numExpected];
             break;
         }
         case FCLispEnvironmentExceptionTypeAssignmentToReservedSymbol:
             reason = [NSString stringWithFormat:@"Can't assign to reserved symbol %@", [userInfo objectForKey:@"symbolName"]];
+            break;
+        case FCLispEnvironmentExceptionTypeReturn:
+            reason = @"Return can only be called inside a function body";
+            break;
+        case FCLispEnvironmentExceptionTypeBreak:
+            reason = @"Break can only be called inside a loop body";
             break;
         default:
             break;
@@ -202,6 +190,19 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
 }
 
 
+#pragma mark - Exceptions
+
++ (void)throwBreakException
+{
+    @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeBreak];
+}
+
++ (void)throwReturnExceptionWithValue:(FCLispObject *)value
+{
+    @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeReturn
+                                                userInfo:@{@"value" : value}];
+}
+
 
 #pragma mark - Buildin Functions
 
@@ -228,6 +229,26 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     global = [self genSym:@"="];
     global.type = FCLispSymbolTypeBuildin;
     global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSetf:) target:self evalArgs:NO];
+    
+    global = [self genSym:@"eval"];
+    global.type = FCLispSymbolTypeBuildin;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionEval:) target:self evalArgs:YES];
+    
+    global = [self genSym:@"break"];
+    global.type = FCLispSymbolTypeBuildin;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionBreak:) target:self evalArgs:NO];
+    
+    global = [self genSym:@"return"];
+    global.type = FCLispSymbolTypeBuildin;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionReturn:) target:self evalArgs:YES];
+    
+    global = [self genSym:@"print"];
+    global.type = FCLispSymbolTypeBuildin;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionPrint:) target:self evalArgs:YES];
+    
+    global = [self genSym:@"while"];
+    global.type = FCLispSymbolTypeBuildin;
+    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionWhile:) target:self evalArgs:NO];
 }
 
 - (FCLispObject *)buildinFunctionExit:(NSDictionary *)callData
@@ -245,8 +266,7 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     if (argc < 1) {
         @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
                                                     userInfo:@{@"functionName" : @"QUOTE",
-                                                               @"numExpected" : @1,
-                                                               @"numGiven" : [NSNumber numberWithInteger:argc]}];
+                                                               @"numExpected" : @1}];
     }
     
     return args.car;
@@ -261,8 +281,7 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     if (argc != 2) {
         @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
                                                     userInfo:@{@"functionName" : @"=",
-                                                               @"numExpected" : @2,
-                                                               @"numGiven" : [NSNumber numberWithInteger:argc]}];
+                                                               @"numExpected" : @2}];
     }
     
     FCLispObject *setfPlace = args.car;
@@ -285,6 +304,111 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     } else {
         // try to eval special setf function form (for instance (= (car (cons 1 2)) 3))
         returnValue = [FCLispEvaluator eval:setfPlace value:((FCLispCons *)args.cdr).car withScopeStack:scopeStack];
+    }
+    
+    return returnValue;
+}
+
+- (FCLispObject *)buildinFunctionEval:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"EVAL",
+                                                               @"numExpected" : @1}];
+    }
+    
+    return [FCLispEvaluator eval:args.car withScopeStack:scopeStack];
+}
+
+- (FCLispObject *)buildinFunctionBreak:(NSDictionary *)callData
+{
+    [[self class] throwBreakException];
+    
+    return [FCLispNIL NIL];
+}
+
+- (FCLispObject *)buildinFunctionReturn:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    FCLispObject *value = [FCLispNIL NIL];
+    
+    if (argc == 1) {
+        value = args.car;
+    }
+    
+    [[self class] throwReturnExceptionWithValue:value];
+    
+    return [FCLispNIL NIL];
+}
+
+- (FCLispObject *)buildinFunctionPrint:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"PRINT",
+                                                               @"numExpected" : @1}];
+    }
+    
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    // print arguments one by one
+    while ([args isKindOfClass:[FCLispCons class]]) {
+        printf("%s\n", [[args.car description] cStringUsingEncoding:NSUTF8StringEncoding]);
+        returnValue = args.car;
+        args = (FCLispCons *)args.cdr;
+    }
+    
+    return returnValue;
+}
+
+- (FCLispObject *)buildinFunctionWhile:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"WHILE",
+                                                               @"numExpected" : @1}];
+    }
+    
+    // loop condition is in first argument
+    FCLispObject *loopCondition = args.car;
+    
+    // body is rest of arguments given
+    NSArray *loopBody = [NSArray arrayWithCons:(FCLispCons *)args.cdr];
+    
+    FCLispObject *loopConditionResult = [FCLispEvaluator eval:loopCondition withScopeStack:scopeStack];
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    // try/catch block to catch break exception to get out of loop prematurely
+    // if exception is not a break exception, just pass it along
+    @try {
+        // loop until condition result is NIL or a break is thrown inside the loop body
+        while ((FCLispNIL *)loopConditionResult != [FCLispNIL NIL]) {
+            // evaluate body statements one by one
+            for (id statement in loopBody) {
+                returnValue = [FCLispEvaluator eval:statement withScopeStack:scopeStack];
+            }
+            // check loop condition again
+            loopConditionResult = [FCLispEvaluator eval:loopCondition withScopeStack:scopeStack];
+        }
+    }
+    @catch (FCLispException *exception) {
+        if (!([exception.name isEqualToString:[FCLispEnvironmentException exceptionName]] &&
+              exception.exceptionType == FCLispEnvironmentExceptionTypeBreak)) {
+            @throw exception;
+        }
     }
     
     return returnValue;

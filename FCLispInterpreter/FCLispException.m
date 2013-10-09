@@ -32,16 +32,23 @@
 
 + (FCLispException *)exceptionWithType:(NSInteger)type
 {
-    return [[FCLispException alloc] initWithName:[self exceptionName]
-                                          reason:[self reasonForType:type andUserInfo:nil]
-                                        userInfo:nil];
+    FCLispException *exception = [[FCLispException alloc] initWithName:[self exceptionName]
+                                                                reason:[self reasonForType:type andUserInfo:nil]
+                                                              userInfo:nil];
+    exception.exceptionType = type;
+    
+    return exception;
 }
 
 + (FCLispException *)exceptionWithType:(NSInteger)type userInfo:(NSDictionary *)userInfo
 {
-    return [[FCLispException alloc] initWithName:[self exceptionName]
-                                          reason:[self reasonForType:type andUserInfo:userInfo]
-                                        userInfo:userInfo];
+    FCLispException *exception = [[FCLispException alloc] initWithName:[self exceptionName]
+                                                                reason:[self reasonForType:type andUserInfo:userInfo]
+                                                              userInfo:userInfo];
+    
+    exception.exceptionType = type;
+    
+    return exception;
 }
 
 @end

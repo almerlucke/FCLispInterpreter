@@ -7,10 +7,33 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "FCLispException.h"
 
 @class FCLispSymbol;
 @class FCLispScopeStack;
+@class FCLispObject;
+
+
+
+/**
+ *  Lisp environment error types
+ */
+typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
+{
+    FCLispEnvironmentExceptionTypeNumArguments,
+    FCLispEnvironmentExceptionTypeAssignmentToReservedSymbol,
+    FCLispEnvironmentExceptionTypeBreak,
+    FCLispEnvironmentExceptionTypeReturn
+};
+
+/**
+ *  FClispEnvironmentException
+ */
+@interface FCLispEnvironmentException : FCLispException
+
+@end
+
+
 
 
 /**
@@ -47,5 +70,17 @@
  *  @return FCLispScopeStack object
  */
 + (FCLispScopeStack *)mainScopeStack;
+
+/**
+ *  Throw a break exception
+ */
++ (void)throwBreakException;
+
+/**
+ *  Throw a return exception
+ *
+ *  @param value
+ */
++ (void)throwReturnExceptionWithValue:(FCLispObject *)value;
 
 @end
