@@ -64,7 +64,8 @@
 
 + (FCLispScopeStack *)scopeStack
 {
-    return [[self alloc] initWithScope:[NSMutableDictionary dictionary]];
+//    return [[self alloc] initWithScope:[NSMutableDictionary dictionary]];
+    return [[self alloc] initWithScope:nil];
 }
 
 + (FCLispScopeStack *)scopeStackWithScope:(NSMutableDictionary *)scope
