@@ -19,7 +19,7 @@
  *  Each scope is represented by a NSDictionary, where the key is the symbol name and the value is the binding.
  *  Each thread MUST create a new scope stack and functions evaluated on that thread SHOULD use the corresponding stack.
  */
-@interface FCLispScopeStack : NSObject
+@interface FCLispScopeStack : NSObject <NSCopying>
 
 /**
  *  Initialize scope stack with an initial scope
@@ -54,11 +54,25 @@
 - (void)pushScope:(NSMutableDictionary *)scope;
 
 /**
+ *  Push an other scope stack on top of this scope stack
+ *
+ *  @param scopeStack
+ */
+- (void)pushScopeStack:(FCLispScopeStack *)scopeStack;
+
+/**
  *  Pop a scope
  *
  *  @return NSMutableDictionary object representing the popped scope
  */
 - (NSMutableDictionary *)popScope;
+
+/**
+ *  Pop the scopes in scopeStack from this scope
+ *
+ *  @param scopeStack
+ */
+- (void)popScopeStack:(FCLispScopeStack *)scopeStack;
 
 /**
  *  Get current binding for symbol

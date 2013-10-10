@@ -45,6 +45,20 @@
     return self;
 }
 
+- (id)initWithScopeArray:(NSArray *)scopeArray
+{
+    if ((self = [super init])) {
+        _stack = [NSMutableArray arrayWithArray:scopeArray];
+    }
+    
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] initWithScopeArray:_stack];
+}
+
 
 #pragma mark - Convenience Methods
 
@@ -61,9 +75,33 @@
 
 #pragma mark - Push And Pop
 
+- (NSArray *)stack
+{
+    return _stack;
+}
+
 - (NSMutableDictionary *)topScope
 {
     return ([_stack count] > 0)? [_stack objectAtIndex:0] : nil;
+}
+
+- (void)pushScopeStack:(FCLispScopeStack *)scopeStack
+{
+    NSMutableArray *otherStack = [NSMutableArray arrayWithArray:[scopeStack stack]];
+    
+    [otherStack addObjectsFromArray:_stack];
+    
+    _stack = otherStack;
+}
+
+- (void)popScopeStack:(FCLispScopeStack *)scopeStack
+{
+    // remove [[scopeStack stack] count] scopes from the top of the stack
+    NSArray *otherStack = [scopeStack stack];
+    NSInteger otherStackCount = [otherStack count];
+    NSInteger leftOverCount = [_stack count] - otherStackCount;
+    
+    _stack = [[_stack subarrayWithRange:NSMakeRange(otherStackCount, leftOverCount)] mutableCopy];
 }
 
 - (void)pushScope:(NSMutableDictionary *)scope

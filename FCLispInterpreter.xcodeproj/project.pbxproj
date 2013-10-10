@@ -24,6 +24,7 @@
 		CBC1DCFC180321EA003E2AE9 /* FCLispInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC1DCFB180321EA003E2AE9 /* FCLispInterpreter.m */; };
 		CBC1DCFF180325B2003E2AE9 /* FCLispCons.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC1DCFE180325B2003E2AE9 /* FCLispCons.m */; };
 		CBC1DD0218032763003E2AE9 /* FCLispListBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC1DD0118032762003E2AE9 /* FCLispListBuilder.m */; };
+		CBD0A4F91807236000A0B8D8 /* FCLispLambdaFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD0A4F81807236000A0B8D8 /* FCLispLambdaFunction.m */; };
 		CBE0255517FB3A3C00DF2F76 /* FCLispScopeStack.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */; };
 		CBE0255817FB3D2500DF2F76 /* FCLispObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE0255717FB3D2500DF2F76 /* FCLispObject.m */; };
 		CBE0255B17FB3E7300DF2F76 /* FCLispEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE0255A17FB3E7300DF2F76 /* FCLispEnvironment.m */; };
@@ -78,6 +79,8 @@
 		CBC1DCFE180325B2003E2AE9 /* FCLispCons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispCons.m; sourceTree = "<group>"; };
 		CBC1DD0018032762003E2AE9 /* FCLispListBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispListBuilder.h; sourceTree = "<group>"; };
 		CBC1DD0118032762003E2AE9 /* FCLispListBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispListBuilder.m; sourceTree = "<group>"; };
+		CBD0A4F71807236000A0B8D8 /* FCLispLambdaFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispLambdaFunction.h; sourceTree = "<group>"; };
+		CBD0A4F81807236000A0B8D8 /* FCLispLambdaFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispLambdaFunction.m; sourceTree = "<group>"; };
 		CBE0255317FB3A3C00DF2F76 /* FCLispScopeStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispScopeStack.h; sourceTree = "<group>"; };
 		CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispScopeStack.m; sourceTree = "<group>"; };
 		CBE0255617FB3D2500DF2F76 /* FCLispObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispObject.h; sourceTree = "<group>"; };
@@ -151,6 +154,8 @@
 				CB98A05318046B37007880F7 /* FCLispFunction.m */,
 				CB98A05518046BDD007880F7 /* FCLispBuildinFunction.h */,
 				CB98A05618046BDD007880F7 /* FCLispBuildinFunction.m */,
+				CBD0A4F71807236000A0B8D8 /* FCLispLambdaFunction.h */,
+				CBD0A4F81807236000A0B8D8 /* FCLispLambdaFunction.m */,
 				CBC1DCFD180325B2003E2AE9 /* FCLispCons.h */,
 				CBC1DCFE180325B2003E2AE9 /* FCLispCons.m */,
 				CBE0255C17FB3E8F00DF2F76 /* FCLispSymbol.h */,
@@ -240,6 +245,7 @@
 				CBE0255817FB3D2500DF2F76 /* FCLispObject.m in Sources */,
 				CBE0255B17FB3E7300DF2F76 /* FCLispEnvironment.m in Sources */,
 				CB3A5E1F17FC93FA00C86FBB /* FCLispNIL.m in Sources */,
+				CBD0A4F91807236000A0B8D8 /* FCLispLambdaFunction.m in Sources */,
 				CB3A5E2217FC9A0E00C86FBB /* FCLispT.m in Sources */,
 				CB3A5E1917FC8BD000C86FBB /* FCLispString.m in Sources */,
 				CB5BC8AD17F8CF7F00084263 /* FCLispException.m in Sources */,
