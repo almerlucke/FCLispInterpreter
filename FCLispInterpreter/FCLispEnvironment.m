@@ -336,6 +336,13 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionIf:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"If else clause (IF statement trueForm &optional falseForm)";
+    
+    // ASYNC
+    global = [self genSym:@"async"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionAsync:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Copy the current scope and evaluate a body of code on an async queue (async &rest body)";
 }
 
 
@@ -817,5 +824,37 @@
     return returnValue;
 }
 
+
+/**
+ *  Evaluate a body of code on an async queue, copies the current scope stack and uses the copy for evaluation
+ *
+ *  @param callData
+ *
+ *  @return NIL
+ */
+- (FCLispObject *)buildinFunctionAsync:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    
+    // create a copy of the current scopeStack
+    FCLispScopeStack *asyncScopeStack = [scopeStack copy];
+    
+    // evaluate the body on an async queue
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        FCLispCons *asyncArgs = args;
+        @try {
+            while ([asyncArgs isKindOfClass:[FCLispCons class]]) {
+               [FCLispEvaluator eval:asyncArgs.car withScopeStack:asyncScopeStack];
+                asyncArgs = (FCLispCons *)asyncArgs.cdr;
+            }
+        }
+        @catch (NSException *exception) {
+            // do nothing with exception
+        }
+    });
+    
+    return [FCLispNIL NIL];
+}
 
 @end
