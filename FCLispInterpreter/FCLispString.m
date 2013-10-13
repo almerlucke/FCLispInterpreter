@@ -23,7 +23,7 @@
 
 - (NSString *)description
 {
-    return self.string;
+    return [NSString stringWithFormat:@"\"%@\"", self.string];
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
