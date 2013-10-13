@@ -75,6 +75,24 @@ typedef NS_ENUM(NSInteger, FCLispLambdaExceptionType)
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if ((self = [super initWithCoder:aDecoder])) {
+        self.params = [aDecoder decodeObjectForKey:@"params"];
+        self.body = [aDecoder decodeObjectForKey:@"body"];
+        self.capturedScopeStack = [aDecoder decodeObjectForKey:@"scopeStack"];
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:self.params forKey:@"params"];
+    [aCoder encodeObject:self.body forKey:@"body"];
+    [aCoder encodeObject:self.capturedScopeStack forKey:@"scopeStack"];
+}
+
 - (FCLispObject *)eval:(FCLispCons *)args scopeStack:(FCLispScopeStack *)scopeStack
 {
     NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
@@ -86,7 +104,7 @@ typedef NS_ENUM(NSInteger, FCLispLambdaExceptionType)
     }
     
     // push captured scope stack
-    [scopeStack pushScopeStack:self.capuredScopeStack];
+    [scopeStack pushScopeStack:self.capturedScopeStack];
     
     // push new scope for params given
     [scopeStack pushScope:nil];
@@ -115,7 +133,7 @@ typedef NS_ENUM(NSInteger, FCLispLambdaExceptionType)
         [scopeStack popScope];
         
         // pop captured scope stack
-        [scopeStack popScopeStack:self.capuredScopeStack];
+        [scopeStack popScopeStack:self.capturedScopeStack];
     };
     
     // NIL is default return value

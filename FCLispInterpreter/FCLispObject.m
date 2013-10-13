@@ -15,4 +15,18 @@
     // do nothing
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    // do nothing
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if ((self = [super init])) {
+        
+    }
+    
+    return self;
+}
+
 @end

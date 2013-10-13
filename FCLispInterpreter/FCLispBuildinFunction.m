@@ -17,6 +17,17 @@
 
 #pragma mark - Init
 
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    FCLispSymbol *sym = [FCLispSymbol genSym:[aDecoder decodeObjectForKey:@"name"]];
+    return (FCLispBuildinFunction *)sym.value;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:self.symbol.name forKey:@"name"];
+}
+
 - (id)initWithSelector:(SEL)selector
                 target:(id)target
               evalArgs:(BOOL)evalArgs

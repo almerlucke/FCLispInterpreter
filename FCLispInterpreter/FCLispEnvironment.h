@@ -32,7 +32,9 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     FCLispEnvironmentExceptionTypeDefineCanNotOverwriteSymbol,
     FCLispEnvironmentExceptionTypeLetExpectedVariableList,
     FCLispEnvironmentExceptionTypeLetParamOverwriteReservedSymbol,
-    FCLispEnvironmentExceptionTypeIllegalLetVariable
+    FCLispEnvironmentExceptionTypeIllegalLetVariable,
+    FCLispEnvironmentExceptionTypeSerializeExpectedPath,
+    FCLispEnvironmentExceptionTypeDeserializeExpectedPath
 };
 
 /**
@@ -72,6 +74,24 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
  *  @param theClass MUST be a FCLispObject subclass
  */
 + (void)registerClass:(Class)theClass;
+
+/**
+ *  Serialize the environment to NSData blob. Serialization is not perfect. 
+ *  Two lambda functions which have caught the same scope stack will end up after deserialize,
+ *  with two different scope stacks, because the pointer is not the same any more.
+ *  Also defined global variables are stored in symbol.value, type and value are not stored when
+ *  serializing symbols. So defined variables are lost after deserialization.
+ *
+ *  @return NSData
+ */
++ (NSData *)serialize;
+
+/**
+ *  Deserialize the environment from NSData blob
+ *
+ *  @param data
+ */
++ (void)deserialize:(NSData *)data;
 
 /**
  *  Main thread scope stack

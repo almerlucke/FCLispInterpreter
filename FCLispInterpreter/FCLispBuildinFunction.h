@@ -10,6 +10,7 @@
 
 @class FCLispCons;
 @class FCLispScopeStack;
+@class FCLispSymbol;
 
 
 /**
@@ -37,6 +38,12 @@
  *  Arguments and return value.
  */
 @property (nonatomic, copy) NSString *documentation;
+
+/**
+ *  Weak reference to symbol to which this function is assigned.
+ *  We need this to encode/decode buildin function objects.
+ */
+@property (nonatomic, weak) FCLispSymbol *symbol;
 
 
 /**

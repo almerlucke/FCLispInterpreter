@@ -19,7 +19,7 @@
  *  Each scope is represented by a NSDictionary, where the key is the symbol name and the value is the binding.
  *  Each thread MUST create a new scope stack and functions evaluated on that thread SHOULD use the corresponding stack.
  */
-@interface FCLispScopeStack : NSObject <NSCopying>
+@interface FCLispScopeStack : NSObject <NSCopying, NSCoding>
 
 /**
  *  Initialize scope stack with an initial scope

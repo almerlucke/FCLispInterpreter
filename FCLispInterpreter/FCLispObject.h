@@ -15,7 +15,7 @@
 /**
  *  Abstract lisp object class
  */
-@interface FCLispObject : NSObject
+@interface FCLispObject : NSObject <NSCoding>
 
 /**
  *  Stub method, CAN be overwritten by subclasses to add buildin methods or constants to the global scope

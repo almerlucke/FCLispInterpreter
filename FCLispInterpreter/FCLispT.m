@@ -27,4 +27,14 @@
     return @"T";
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    return [FCLispT T];
+}
+
 @end

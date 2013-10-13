@@ -78,6 +78,12 @@
         case FCLispEnvironmentExceptionTypeLetExpectedVariableList:
             reason = [NSString stringWithFormat:@"LET expected a variable list, %@ is not a list", [userInfo objectForKey:@"value"]];
             break;
+        case FCLispEnvironmentExceptionTypeSerializeExpectedPath:
+            reason = [NSString stringWithFormat:@"SERIALIZE expected a file path as second argument, %@ is not a string", [userInfo objectForKey:@"value"]];
+            break;
+        case FCLispEnvironmentExceptionTypeDeserializeExpectedPath:
+            reason = [NSString stringWithFormat:@"DESERIALIZE expected a file path as first argument, %@ is not a string", [userInfo objectForKey:@"value"]];
+            break;
         default:
             break;
     }
@@ -155,6 +161,33 @@
     }
     
     return self;
+}
+
+- (NSData *)serialize
+{
+    NSDictionary *archive = @{@"symbols": _symbols, @"scopeStack" : _scopeStack};
+    
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:archive];
+    
+    return data;
+}
+
++ (NSData *)serialize
+{
+    return [[self defaultEnvironment] serialize];
+}
+
+- (void)deserialize:(NSData *)data
+{
+    NSDictionary *archive = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    
+    _symbols = [archive objectForKey:@"symbols"];
+    _scopeStack = [archive objectForKey:@"scopeStack"];
+}
+
++ (void)deserialize:(NSData *)data
+{
+    [[self defaultEnvironment] deserialize:data];
 }
 
 
@@ -259,6 +292,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionExit:) target:self];
     global.value = function;
     function.documentation = @"Exit from the program (EXIT)";
+    function.symbol = global;
     
     // QUOTE
     global = [self genSym:@"quote"];
@@ -266,6 +300,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionQuote:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Delay evaluation of quoted object (QUOTE obj) or 'obj";
+    function.symbol = global;
     
     // SETF (=)
     global = [self genSym:@"="];
@@ -273,6 +308,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSetf:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Assign a value to a setable place (= place value)";
+    function.symbol = global;
     
     // EVAL
     global = [self genSym:@"eval"];
@@ -280,6 +316,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionEval:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Evaluate an object (EVAL obj)";
+    function.symbol = global;
     
     // BREAK
     global = [self genSym:@"break"];
@@ -287,6 +324,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionBreak:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Forced break from a loop body (BREAK)";
+    function.symbol = global;
     
     // RETURN
     global = [self genSym:@"return"];
@@ -294,6 +332,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionReturn:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Forced return from a lambda body (RETURN &optional obj)";
+    function.symbol = global;
     
     // PRINT
     global = [self genSym:@"print"];
@@ -301,6 +340,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionPrint:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Quick print object(s) to console (PRINT obj &rest moreObjects)";
+    function.symbol = global;
     
     // WHILE
     global = [self genSym:@"while"];
@@ -308,6 +348,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionWhile:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Loop through body until loop condition is NIL (WHILE loopCondition &rest body)";
+    function.symbol = global;
     
     // DEFINE
     global = [self genSym:@"define"];
@@ -315,6 +356,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDefine:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Define a global variable (DEFINE symbol &optional value)";
+    function.symbol = global;
     
     // LAMBDA
     global = [self genSym:@"lambda"];
@@ -322,6 +364,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLambda:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Create a lambda function (LAMBDA argList &rest body)";
+    function.symbol = global;
     
     // LET
     global = [self genSym:@"let"];
@@ -329,6 +372,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLet:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Create a local scope and execute the body (LET varList &rest body)";
+    function.symbol = global;
     
     // IF
     global = [self genSym:@"if"];
@@ -336,6 +380,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionIf:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"If else clause (IF statement trueForm &optional falseForm)";
+    function.symbol = global;
     
     // DISPATCH
     global = [self genSym:@"dispatch"];
@@ -343,6 +388,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDispatch:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Copy the current scope and evaluate a body of code async on a background thread (dispatch &rest body)";
+    function.symbol = global;
     
     // DISPATCHM
     global = [self genSym:@"dispatchm"];
@@ -350,6 +396,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDispatchm:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Copy the current scope and evaluate a body of code on the main thread (dispatchm &rest body)";
+    function.symbol = global;
     
     // AND
     global = [self genSym:@"and"];
@@ -357,6 +404,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionAnd:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Evaluate args until NIL is found, return last evaluated value (AND &rest args)";
+    function.symbol = global;
     
     // OR
     global = [self genSym:@"or"];
@@ -364,6 +412,7 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionOr:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Evaluate args until non NIL is found, return last evaluated value (OR &rest args)";
+    function.symbol = global;
     
     // NOT
     global = [self genSym:@"not"];
@@ -371,6 +420,23 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionNot:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Returns inverse of object, if NIL returns T, if not NIL return NIL (NOT arg)";
+    function.symbol = global;
+    
+    // SERIALIZE
+    global = [self genSym:@"serialize"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSerialize:) target:self evalArgs:YES];
+    global.value = function;
+    function.documentation = @"Serialize a lisp object to file (SERIALIZE object filePath)";
+    function.symbol = global;
+    
+    // DESERIALIZE
+    global = [self genSym:@"deserialize"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDeserialize:) target:self evalArgs:YES];
+    global.value = function;
+    function.documentation = @"Deserialize a lisp object from file (DESERIALIZE filePath)";
+    function.symbol = global;
 }
 
 
@@ -703,7 +769,7 @@
     // lambda body is the rest of the args list
     lambdaFunction.body = [NSArray arrayWithCons:(FCLispCons *)args.cdr];
     // capture a copy of the current scopeStack
-    lambdaFunction.capuredScopeStack = scopeStack;
+    lambdaFunction.capturedScopeStack = scopeStack;
     
     return lambdaFunction;
 }
@@ -949,7 +1015,7 @@
  *
  *  @return FCLispObject
  */
-- (id)buildinFunctionOr:(NSDictionary *)callData
+- (FCLispObject *)buildinFunctionOr:(NSDictionary *)callData
 {
     FCLispCons *args = [callData objectForKey:@"args"];
     FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
@@ -973,7 +1039,7 @@
  *
  *  @return FCLispObject
  */
-- (id)buildinFunctionNot:(NSDictionary *)callData
+- (FCLispObject *)buildinFunctionNot:(NSDictionary *)callData
 {
     FCLispCons *args = [callData objectForKey:@"args"];
     NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
@@ -988,6 +1054,75 @@
     
     if ((FCLispNIL *)args.car == [FCLispNIL NIL]) {
         returnValue = [FCLispT T];
+    }
+    
+    return returnValue;
+}
+
+/**
+ *  Serialize a lisp object to file
+ *
+ *  @param callData
+ *
+ *  @return FCLispNIL or FCLispT
+ */
+- (FCLispObject *)buildinFunctionSerialize:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 2) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"SERIALIZE",
+                                                               @"numExpected" : @2}];
+    }
+    
+    FCLispObject *objectToSerialize = args.car;
+    FCLispString *path = (FCLispString *)((FCLispCons *)args.cdr).car;
+    
+    if (![path isKindOfClass:[FCLispString class]]) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeSerializeExpectedPath
+                                                    userInfo:@{@"value" : path}];
+    }
+    
+    NSData *archive = [NSKeyedArchiver archivedDataWithRootObject:@{@"object": objectToSerialize}];
+    BOOL succes = [archive writeToFile:path.string atomically:NO];
+    
+    return (succes)? [FCLispT T] : [FCLispNIL NIL];
+}
+
+/**
+ *  Deserialize a lisp object from file
+ *
+ *  @param callData
+ *
+ *  @return FCLispNIL or deserialized FCLispObject
+ */
+- (FCLispObject *)buildinFunctionDeserialize:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"DESERIALIZE",
+                                                               @"numExpected" : @1}];
+    }
+    
+    FCLispString *path = (FCLispString *)args.car;
+    
+    if (![path isKindOfClass:[FCLispString class]]) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeDeserializeExpectedPath
+                                                    userInfo:@{@"value" : path}];
+    }
+    
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    NSData *archive = [NSData dataWithContentsOfFile:path.string];
+    if (archive) {
+        returnValue = [[NSKeyedUnarchiver unarchiveObjectWithData:archive] objectForKey:@"object"];
+        if (!returnValue) {
+            returnValue = [FCLispNIL NIL];
+        }
     }
     
     return returnValue;

@@ -43,4 +43,19 @@
     return self.name;
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeObject:self.name forKey:@"name"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    NSString *name = [aDecoder decodeObjectForKey:@"name"];
+    FCLispSymbol *sym = [FCLispSymbol genSym:name];
+    
+    return sym;
+}
+
 @end

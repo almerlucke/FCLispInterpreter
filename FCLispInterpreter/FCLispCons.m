@@ -81,6 +81,25 @@
 }
 
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeObject:self.car forKey:@"car"];
+    [aCoder encodeObject:self.cdr forKey:@"cdr"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if ((self = [super initWithCoder:aDecoder])) {
+        self.car = [aDecoder decodeObjectForKey:@"car"];
+        self.cdr = [aDecoder decodeObjectForKey:@"cdr"];
+    }
+    
+    return self;
+}
+
+
 //#pragma mark - Buildin Functions
 //
 //+ (void)addBuildinFunctionsToEnvironment:(FCLispEnvironment *)environment

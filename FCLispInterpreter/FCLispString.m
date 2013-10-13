@@ -26,4 +26,20 @@
     return self.string;
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeObject:self.string forKey:@"string"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if ((self = [super initWithCoder:aDecoder])) {
+        self.string = [aDecoder decodeObjectForKey:@"string"];
+    }
+    
+    return self;
+}
+
 @end

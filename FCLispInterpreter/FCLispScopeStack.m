@@ -26,6 +26,20 @@
 
 #pragma mark - Initialize
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:_stack forKey:@"stack"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if ((self = [super init])) {
+        _stack = [aDecoder decodeObjectForKey:@"stack"];
+    }
+    
+    return self;
+}
+
 - (void)initializeWithScope:(NSMutableDictionary *)scope
 {
     if (scope) {

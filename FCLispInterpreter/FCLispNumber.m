@@ -11,12 +11,12 @@
 /**
  *  Number type
  */
-typedef enum
+typedef NS_ENUM(NSInteger, FCLispNumberType)
 {
     FCLispNumberTypeInteger = 0,
     FCLispNumberTypeFloat = 1
 //    FCLispNumberTypeRatio = 2
-} FCLispNumberType;
+};
 
 
 /**
@@ -58,6 +58,32 @@ typedef union
     if ((self = [super init])) {
         _type = FCLispNumberTypeInteger;
         _valueUnion.integerValue = integerValue;
+    }
+    
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeInteger:_type forKey:@"type"];
+    if (_type == FCLispNumberTypeInteger) {
+        [aCoder encodeInt64:_valueUnion.integerValue forKey:@"integer"];
+    } else if (_type == FCLispNumberTypeFloat) {
+        [aCoder encodeDouble:_valueUnion.floatValue forKey:@"float"];
+    }
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if ((self = [super initWithCoder:aDecoder])) {
+        _type = [aDecoder decodeIntegerForKey:@"type"];
+        if (_type == FCLispNumberTypeInteger) {
+            _valueUnion.integerValue = [aDecoder decodeInt64ForKey:@"integer"];
+        } else if (_type == FCLispNumberTypeFloat) {
+            _valueUnion.floatValue = [aDecoder decodeDoubleForKey:@"float"];
+        }
     }
     
     return self;

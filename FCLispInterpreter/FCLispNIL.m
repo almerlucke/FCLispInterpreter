@@ -27,4 +27,14 @@
     return @"NIL";
 }
 
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    return [FCLispNIL NIL];
+}
+
 @end

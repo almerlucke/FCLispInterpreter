@@ -20,6 +20,6 @@
 @property (nonatomic, strong) NSArray *body;
 
 // array with captured NSDictionary scopes
-@property (nonatomic, copy) FCLispScopeStack *capuredScopeStack;
+@property (nonatomic, copy) FCLispScopeStack *capturedScopeStack;
 
 @end
