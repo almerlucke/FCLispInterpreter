@@ -329,6 +329,13 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLet:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Create a local scope and execute the body (LET varList &rest body)";
+    
+    // IF
+    global = [self genSym:@"if"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionIf:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"If else clause (IF statement trueForm &optional falseForm)";
 }
 
 
@@ -668,7 +675,8 @@
 
 
 /**
- *  Create a local scope and execute a LET scope block. LET defines a new scope, adds local variables and evaluates its body.
+ *  Create a local scope and execute a LET scope block. 
+ *  LET defines a new scope, adds local variables and evaluates its body.
  *
  *  @param callData
  *
@@ -766,6 +774,45 @@
     }
     
     cleanupBlock();
+    
+    return returnValue;
+}
+
+/**
+ *  If else clause (IF statement trueForm &optional falseForm)
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (FCLispObject *)buildinFunctionIf:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 2) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"IF",
+                                                               @"numExpected" : @2}];
+    }
+    
+    FCLispObject *condition = args.car;
+    FCLispObject *ifClause = ((FCLispCons *)args.cdr).car;
+    FCLispObject *elseClause = [FCLispNIL NIL];
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    if (argc > 2) {
+        elseClause = ((FCLispCons *)((FCLispCons *)args.cdr).cdr).car;
+    }
+    
+    condition = [FCLispEvaluator eval:condition withScopeStack:scopeStack];
+    
+    if (![condition isKindOfClass:[FCLispNIL class]]) {
+        returnValue = [FCLispEvaluator eval:ifClause withScopeStack:scopeStack];
+    } else {
+        returnValue = [FCLispEvaluator eval:elseClause withScopeStack:scopeStack];
+    }
     
     return returnValue;
 }
