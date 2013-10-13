@@ -16,6 +16,11 @@
 #import "FCLispListBuilder.h"
 
 
+#pragma mark - FCLispConsException
+
+/**
+ *  FCLispConsException types
+ */
 typedef NS_ENUM(NSInteger, FCLispConsExceptionType)
 {
     FCLispConsExceptionTypeCarExpectedList,
@@ -58,6 +63,7 @@ typedef NS_ENUM(NSInteger, FCLispConsExceptionType)
 @end
 
 
+#pragma mark - FCLispCons
 
 @implementation FCLispCons
 
@@ -193,7 +199,7 @@ typedef NS_ENUM(NSInteger, FCLispConsExceptionType)
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionAppend:) target:self];
     global.value = function;
-    function.documentation = @"Append on or more lists to a list (APPEND list &rest lists)";
+    function.documentation = @"Append zero or more lists (APPEND &rest lists)";
     function.symbol = global;
 }
 
