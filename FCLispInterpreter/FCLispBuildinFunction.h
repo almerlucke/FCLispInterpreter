@@ -32,6 +32,12 @@
  */
 @property (nonatomic, strong) id target;
 
+/**
+ *  Optional documentation about the use of this build in function.
+ *  Arguments and return value.
+ */
+@property (nonatomic, copy) NSString *documentation;
+
 
 /**
  *  Initialize buildin function

@@ -241,45 +241,83 @@
     global = [self genSym:@"&rest"];
     global.type = FCLispSymbolTypeReserved;
     
+    
+    // EXIT function
     global = [self genSym:@"exit"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionExit:) target:self];
+    FCLispBuildinFunction *function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionExit:)
+                                                                           target:self];
+    global.value = function;
+    function.documentation = @"Exit from the program (EXIT)";
     
+    
+    // QUOTE function
     global = [self genSym:@"quote"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionQuote:) target:self evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionQuote:)
+                                                    target:self
+                                                  evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Delay evaluation of quoted object (QUOTE obj) or 'obj";
     
+    
+    // = function
     global = [self genSym:@"="];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSetf:) target:self evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSetf:)
+                                                    target:self
+                                                  evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Assign a value to a setable place (= place value)";
     
+    
+    // EVAL function
     global = [self genSym:@"eval"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionEval:) target:self evalArgs:YES];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionEval:) target:self evalArgs:YES];
+    global.value = function;
+    function.documentation = @"Evaluate an object (EVAL obj)";
     
+    
+    // BREAK function
     global = [self genSym:@"break"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionBreak:) target:self evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionBreak:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Forced break from a loop body (BREAK)";
     
+    // RETURN function
     global = [self genSym:@"return"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionReturn:) target:self evalArgs:YES];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionReturn:) target:self evalArgs:YES];
+    global.value = function;
+    function.documentation = @"Forced return from a lambda body (RETURN &optional obj)";
     
+    // PRINT function
     global = [self genSym:@"print"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionPrint:) target:self evalArgs:YES];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionPrint:) target:self evalArgs:YES];
+    global.value = function;
+    function.documentation = @"Quick print object(s) to console (PRINT obj &rest moreObjects)";
     
+    // WHILE function
     global = [self genSym:@"while"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionWhile:) target:self evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionWhile:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Loop through body until loop condition is NIL (WHILE loopCondition &rest body)";
     
     global = [self genSym:@"define"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDefine:) target:self evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDefine:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Define a global variable (DEFINE symbol &optional value)";
     
     global = [self genSym:@"lambda"];
     global.type = FCLispSymbolTypeBuildin;
-    global.value = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLambda:) target:self evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLambda:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Create a lambda function (LAMBDA argList &rest body)";
 }
 
 
