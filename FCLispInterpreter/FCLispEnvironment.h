@@ -69,6 +69,15 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
 + (FCLispSymbol *)genSym:(NSString *)name;
 
 /**
+ *  Generate a symbol, symbols SHOULD only be generated via gensym
+ *
+ *  @param name Symbol name
+ *
+ *  @return a new or existing symbol
+ */
+- (FCLispSymbol *)genSym:(NSString *)name;
+
+/**
  *  Register a class with the default environment
  *
  *  @param theClass MUST be a FCLispObject subclass
