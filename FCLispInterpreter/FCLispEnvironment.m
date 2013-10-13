@@ -69,6 +69,15 @@
         case FCLispEnvironmentExceptionTypeDefineCanNotOverwriteSymbol:
             reason = [NSString stringWithFormat:@"DEFINE can not overwrite reserved or system defined symbol %@", [userInfo objectForKey:@"symbolName"]];
             break;
+        case FCLispEnvironmentExceptionTypeLetParamOverwriteReservedSymbol:
+            reason = [NSString stringWithFormat:@"LET parameter shadows reserved symbol %@", [userInfo objectForKey:@"symbolName"]];
+            break;
+        case FCLispEnvironmentExceptionTypeIllegalLetVariable:
+            reason = [NSString stringWithFormat:@"Illegal LET variable %@", [userInfo objectForKey:@"value"]];
+            break;
+        case FCLispEnvironmentExceptionTypeLetExpectedVariableList:
+            reason = [NSString stringWithFormat:@"LET expected a variable list, %@ is not a list", [userInfo objectForKey:@"value"]];
+            break;
         default:
             break;
     }
@@ -242,82 +251,84 @@
     global.type = FCLispSymbolTypeReserved;
     
     
-    // EXIT function
+    FCLispBuildinFunction *function = nil;
+    
+    // EXIT
     global = [self genSym:@"exit"];
     global.type = FCLispSymbolTypeBuildin;
-    FCLispBuildinFunction *function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionExit:)
-                                                                           target:self];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionExit:) target:self];
     global.value = function;
     function.documentation = @"Exit from the program (EXIT)";
     
-    
-    // QUOTE function
+    // QUOTE
     global = [self genSym:@"quote"];
     global.type = FCLispSymbolTypeBuildin;
-    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionQuote:)
-                                                    target:self
-                                                  evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionQuote:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Delay evaluation of quoted object (QUOTE obj) or 'obj";
     
-    
-    // = function
+    // SETF (=)
     global = [self genSym:@"="];
     global.type = FCLispSymbolTypeBuildin;
-    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSetf:)
-                                                    target:self
-                                                  evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionSetf:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Assign a value to a setable place (= place value)";
     
-    
-    // EVAL function
+    // EVAL
     global = [self genSym:@"eval"];
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionEval:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Evaluate an object (EVAL obj)";
     
-    
-    // BREAK function
+    // BREAK
     global = [self genSym:@"break"];
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionBreak:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Forced break from a loop body (BREAK)";
     
-    // RETURN function
+    // RETURN
     global = [self genSym:@"return"];
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionReturn:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Forced return from a lambda body (RETURN &optional obj)";
     
-    // PRINT function
+    // PRINT
     global = [self genSym:@"print"];
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionPrint:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Quick print object(s) to console (PRINT obj &rest moreObjects)";
     
-    // WHILE function
+    // WHILE
     global = [self genSym:@"while"];
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionWhile:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Loop through body until loop condition is NIL (WHILE loopCondition &rest body)";
     
+    // DEFINE
     global = [self genSym:@"define"];
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDefine:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Define a global variable (DEFINE symbol &optional value)";
     
+    // LAMBDA
     global = [self genSym:@"lambda"];
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLambda:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Create a lambda function (LAMBDA argList &rest body)";
+    
+    // LET
+    global = [self genSym:@"let"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLet:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Create a local scope and execute the body (LET varList &rest body)";
 }
 
 
@@ -653,6 +664,110 @@
     lambdaFunction.capuredScopeStack = scopeStack;
     
     return lambdaFunction;
+}
+
+
+/**
+ *  Create a local scope and execute a LET scope block. LET defines a new scope, adds local variables and evaluates its body.
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (FCLispObject *)buildinFunctionLet:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"LET",
+                                                               @"numExpected" : @1}];
+    }
+    
+    FCLispCons *variableList = (FCLispCons *)args.car;
+    if (![variableList isKindOfClass:[FCLispCons class]] &&
+        ![variableList isKindOfClass:[FCLispNIL class]]) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeLetExpectedVariableList
+                                                    userInfo:@{@"value" : variableList}];
+    }
+    
+    // define cleanup block
+    void (^cleanupBlock)() = ^{
+        [scopeStack popScope];
+    };
+    
+    // push a new scope on stack
+    [scopeStack pushScope:nil];
+    
+    @try {
+        // try to define local variables one by one, if an error occurs cleanup
+        while ([variableList isKindOfClass:[FCLispCons class]]) {
+            // we dont know if var desc is symbol or cons yet
+            FCLispObject *variableDescription = variableList.car;
+            FCLispSymbol *variable = nil;
+            FCLispObject *variableValue = [FCLispNIL NIL];
+            
+            if ([variableDescription isKindOfClass:[FCLispSymbol class]]) {
+                // variable is symbol only (assign NIL)
+                variable = (FCLispSymbol *)variableDescription;
+                // check for reserved symbols
+                if (variable.type == FCLispSymbolTypeReserved || variable.type == FCLispSymbolTypeLiteral) {
+                    @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeLetParamOverwriteReservedSymbol
+                                                                userInfo:@{@"symbolName" : variable.name}];
+                }
+            } else if ([variableDescription isKindOfClass:[FCLispCons class]]) {
+                // check if we have a valid symbol and value variable assignment
+                NSInteger varDescLen = [((FCLispCons *)variableDescription) length];
+                variable = (FCLispSymbol *)((FCLispCons *)variableDescription).car;
+                if (![variable isKindOfClass:[FCLispSymbol class]] || varDescLen != 2) {
+                    @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeIllegalLetVariable
+                                                                userInfo:@{@"value" : variableDescription}];
+                }
+                // check for reserved symbols
+                if (variable.type == FCLispSymbolTypeReserved || variable.type == FCLispSymbolTypeLiteral) {
+                    @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeLetParamOverwriteReservedSymbol
+                                                                userInfo:@{@"symbolName" : variable.name}];
+                }
+                // value needs to be evaluated first
+                variableValue = [FCLispEvaluator eval:((FCLispCons *)((FCLispCons *)variableDescription).cdr).car
+                                       withScopeStack:scopeStack];
+            } else {
+                @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeIllegalLetVariable
+                                                            userInfo:@{@"value" : variableDescription}];
+            }
+            
+            // add binding to scope
+            [scopeStack addBinding:variableValue forSymbol:variable];
+         
+            // goto next variable
+            variableList = (FCLispCons *)variableList.cdr;
+        }
+    }
+    @catch (NSException *exception) {
+        cleanupBlock();
+        @throw exception;
+    }
+    
+    // loop through rest of LET body and evaluate statements
+    args = (FCLispCons *)args.cdr;
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    @try {
+        while ([args isKindOfClass:[FCLispCons class]]) {
+            returnValue = [FCLispEvaluator eval:args.car withScopeStack:scopeStack];
+            args = (FCLispCons *)args.cdr;
+        }
+    }
+    @catch (NSException *exception) {
+        cleanupBlock();
+        @throw exception;
+    }
+    
+    cleanupBlock();
+    
+    return returnValue;
 }
 
 

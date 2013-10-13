@@ -29,7 +29,10 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     FCLispEnvironmentExceptionTypeLambdaParamListContainsNonSymbol,
     FCLispEnvironmentExceptionTypeLambdaParamOverwriteReservedSymbol,
     FCLispEnvironmentExceptionTypeDefineExpectedSymbol,
-    FCLispEnvironmentExceptionTypeDefineCanNotOverwriteSymbol
+    FCLispEnvironmentExceptionTypeDefineCanNotOverwriteSymbol,
+    FCLispEnvironmentExceptionTypeLetExpectedVariableList,
+    FCLispEnvironmentExceptionTypeLetParamOverwriteReservedSymbol,
+    FCLispEnvironmentExceptionTypeIllegalLetVariable
 };
 
 /**
