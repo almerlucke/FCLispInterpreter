@@ -17,13 +17,15 @@ int main(int argc, const char * argv[])
         printf("Welcome to FCLisp, type (exit) to quit\n\n> ");
         while (YES) {
             @try {
-                // get a line from stdin
-                fgets(line, 4096, stdin);
-                // convert c string to nsstring
-                NSString *lispStatement = [NSString stringWithCString:line encoding:NSUTF8StringEncoding];
-                // evaluate statement in try/catch block
-                id obj = [FCLispInterpreter interpretString:lispStatement withScopeStack:[FCLispEnvironment mainScopeStack]];
-                printf("%s\n> ", [[obj description] cStringUsingEncoding:NSUTF8StringEncoding]);
+                @autoreleasepool {
+                    // get a line from stdin
+                    fgets(line, 4096, stdin);
+                    // convert c string to nsstring
+                    NSString *lispStatement = [NSString stringWithCString:line encoding:NSUTF8StringEncoding];
+                    // evaluate statement in try/catch block
+                    id obj = [FCLispInterpreter interpretString:lispStatement withScopeStack:[FCLispEnvironment mainScopeStack]];
+                    printf("%s\n> ", [[obj description] cStringUsingEncoding:NSUTF8StringEncoding]);
+                }
             }
             @catch (FCLispException *exception) {
                 printf("%s: %s\n> ", [exception.name cStringUsingEncoding:NSUTF8StringEncoding],

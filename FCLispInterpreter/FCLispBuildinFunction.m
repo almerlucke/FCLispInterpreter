@@ -57,7 +57,7 @@
 
 #pragma mark - Override eval
 
-- (id)eval:(FCLispCons *)args scopeStack:(FCLispScopeStack *)scopeStack
+- (FCLispObject *)eval:(FCLispCons *)args scopeStack:(FCLispScopeStack *)scopeStack
 {
     NSDictionary *callData = @{@"args" : args, @"scopeStack" : scopeStack};
 #pragma clang diagnostic push

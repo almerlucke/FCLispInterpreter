@@ -337,12 +337,40 @@
     global.value = function;
     function.documentation = @"If else clause (IF statement trueForm &optional falseForm)";
     
-    // ASYNC
-    global = [self genSym:@"async"];
+    // DISPATCH
+    global = [self genSym:@"dispatch"];
     global.type = FCLispSymbolTypeBuildin;
-    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionAsync:) target:self evalArgs:NO];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDispatch:) target:self evalArgs:NO];
     global.value = function;
-    function.documentation = @"Copy the current scope and evaluate a body of code on an async queue (async &rest body)";
+    function.documentation = @"Copy the current scope and evaluate a body of code async on a background thread (dispatch &rest body)";
+    
+    // DISPATCHM
+    global = [self genSym:@"dispatchm"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDispatchm:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Copy the current scope and evaluate a body of code on the main thread (dispatchm &rest body)";
+    
+    // AND
+    global = [self genSym:@"and"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionAnd:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Evaluate args until NIL is found, return last evaluated value (AND &rest args)";
+    
+    // OR
+    global = [self genSym:@"or"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionOr:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Evaluate args until non NIL is found, return last evaluated value (OR &rest args)";
+    
+    // NOT
+    global = [self genSym:@"not"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionNot:) target:self evalArgs:YES];
+    global.value = function;
+    function.documentation = @"Returns inverse of object, if NIL returns T, if not NIL return NIL (NOT arg)";
 }
 
 
@@ -832,7 +860,7 @@
  *
  *  @return NIL
  */
-- (FCLispObject *)buildinFunctionAsync:(NSDictionary *)callData
+- (FCLispObject *)buildinFunctionDispatch:(NSDictionary *)callData
 {
     FCLispCons *args = [callData objectForKey:@"args"];
     FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
@@ -850,11 +878,119 @@
             }
         }
         @catch (NSException *exception) {
-            // do nothing with exception
+            // discard exception
         }
     });
     
     return [FCLispNIL NIL];
+}
+
+/**
+ *  Evaluate a body of code on the main thread, copies the current scope stack and uses the copy for evaluation
+ *
+ *  @param callData
+ *
+ *  @return NIL
+ */
+- (FCLispObject *)buildinFunctionDispatchm:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    
+    // create a copy of the current scopeStack
+    FCLispScopeStack *asyncScopeStack = [scopeStack copy];
+    
+    // evaluate the body on the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        FCLispCons *asyncArgs = args;
+        @try {
+            while ([asyncArgs isKindOfClass:[FCLispCons class]]) {
+                [FCLispEvaluator eval:asyncArgs.car withScopeStack:asyncScopeStack];
+                asyncArgs = (FCLispCons *)asyncArgs.cdr;
+            }
+        }
+        @catch (NSException *exception) {
+            // discard exception
+        }
+    });
+    
+    return [FCLispNIL NIL];
+}
+
+
+/**
+ *  AND, evaluate until NIL is found, returns last evaluated object
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (FCLispObject *)buildinFunctionAnd:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    FCLispObject *returnValue = [FCLispT T];
+    
+    while ([args isKindOfClass:[FCLispCons class]]) {
+        returnValue = [FCLispEvaluator eval:args.car withScopeStack:scopeStack];
+        if ((FCLispNIL *)returnValue == [FCLispNIL NIL]) {
+            break;
+        }
+        args = (FCLispCons *)args.cdr;
+    }
+    
+    return returnValue;
+}
+
+/**
+ *  OR, evaluate until a non-NIL value is found, returns last evaluated object
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (id)buildinFunctionOr:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    while ([args isKindOfClass:[FCLispCons class]]) {
+        returnValue = [FCLispEvaluator eval:args.car withScopeStack:scopeStack];
+        if ((FCLispNIL *)returnValue != [FCLispNIL NIL]) {
+            break;
+        }
+        args = (FCLispCons *)args.cdr;
+    }
+    
+    return returnValue;
+}
+
+/**
+ *  NOT, returns inverse of object, if NIL returns T, if not NIL return NIL
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (id)buildinFunctionNot:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"NOT",
+                                                               @"numExpected" : @1}];
+    }
+    
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    if ((FCLispNIL *)args.car == [FCLispNIL NIL]) {
+        returnValue = [FCLispT T];
+    }
+    
+    return returnValue;
 }
 
 @end
