@@ -17,6 +17,7 @@
 #import "FCLispObject.h"
 #import "FCLispFunction.h"
 #import "FCLispBuildinFunction.h"
+#import "FCLispLambdaFunction.h"
 #import "FCLispCons.h"
 #import "FCLispSymbol.h"
 #import "FCLispString.h"
