@@ -7,36 +7,52 @@
 //
 
 #import "FCLispString.h"
+#import "FCUTF8String.h"
 
 
+@interface FCLispString ()
+{
+    FCUTF8String *_internalString;
+}
+@end
 
 @implementation FCLispString
 
+- (id)initWithString:(NSString *)string
+{
+    if ((self = [super init])) {
+        _internalString = [FCUTF8String stringWithSystemString:string];
+    }
+    
+    return self;
+}
+
 + (FCLispString *)stringWithString:(NSString *)string
 {
-    FCLispString *lispString = [[FCLispString alloc] init];
-    
-    lispString.string = string;
-    
-    return lispString;
+    return [[FCLispString alloc] initWithString:string];
+}
+
+- (NSString *)string
+{
+    return _internalString.systemString;
 }
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"\"%@\"", self.string];
+    return [NSString stringWithFormat:@"\"%@\"", _internalString];
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
     [super encodeWithCoder:aCoder];
     
-    [aCoder encodeObject:self.string forKey:@"string"];
+    [aCoder encodeObject:_internalString.systemString forKey:@"string"];
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     if ((self = [super initWithCoder:aDecoder])) {
-        self.string = [aDecoder decodeObjectForKey:@"string"];
+        _internalString = [FCUTF8String stringWithSystemString:[aDecoder decodeObjectForKey:@"string"]];
     }
     
     return self;

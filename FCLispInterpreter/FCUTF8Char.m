@@ -15,6 +15,7 @@
 {
     NSUInteger _numBytes;
     uint8_t _bytes[4];
+    NSUInteger _unicodeCodePoint;
 }
 @end
 
@@ -33,6 +34,9 @@
         _numBytes = numBytes;
         
         memcpy(_bytes, bytes, numBytes);
+        
+        // initialize the unicode code point
+        [self initializeUnicodeCodePoint];
     }
     
     return self;
@@ -45,6 +49,8 @@
 
 - (id)initWithUnicodeCodePoint:(NSUInteger)codePoint
 {
+    _unicodeCodePoint = codePoint;
+    
     if ((self = [super init])) {
         if (codePoint < 0x80) {
             // 1 byte
@@ -88,9 +94,9 @@
     return [[self alloc] initWithUnicodeCodePoint:codePoint];
 }
 
-#pragma mark - Inspection Methods
+#pragma mark - Unicode code point from bytes
 
-- (NSUInteger)unicodeCodePoint
+- (void)initializeUnicodeCodePoint
 {
     NSUInteger value = 0;
     
@@ -120,7 +126,14 @@
         value = _bytes[0];
     }
     
-    return value;
+    _unicodeCodePoint = value;
+}
+
+#pragma mark - Inspection Methods
+
+- (NSUInteger)unicodeCodePoint
+{
+    return _unicodeCodePoint;
 }
 
 - (NSUInteger)numBytes

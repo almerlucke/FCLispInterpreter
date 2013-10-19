@@ -16,7 +16,7 @@
 /**
  *  NSString string
  */
-@property (nonatomic, copy) NSString *string;
+@property (nonatomic, readonly) NSString *string;
 
 /**
  *  Create a new lisp string
