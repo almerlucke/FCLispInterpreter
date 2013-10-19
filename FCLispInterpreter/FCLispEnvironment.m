@@ -19,6 +19,7 @@
 #import "FCLispEvaluator.h"
 #import "FCLispException.h"
 #import "FCLispLambdaFunction.h"
+#import "FCLispInterpreter.h"
 #import "NSArray+FCLisp.h"
 
 
@@ -83,6 +84,9 @@
             break;
         case FCLispEnvironmentExceptionTypeDeserializeExpectedPath:
             reason = [NSString stringWithFormat:@"DESERIALIZE expected a file path as first argument, %@ is not a string", [userInfo objectForKey:@"value"]];
+            break;
+        case FCLispEnvironmentExceptionTypeLoadExpectedPath:
+            reason = [NSString stringWithFormat:@"LOAD expected a file path as first argument, %@ is not a string", [userInfo objectForKey:@"value"]];
             break;
         default:
             break;
@@ -436,6 +440,14 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDeserialize:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Deserialize a lisp object from file (DESERIALIZE filePath)";
+    function.symbol = global;
+    
+    // LOAD
+    global = [self genSym:@"load"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLoad:) target:self evalArgs:YES];
+    global.value = function;
+    function.documentation = @"Load (parse, interpret and evaluate) a file containing lisp code (LOAD filePath)";
     function.symbol = global;
 }
 
@@ -1126,6 +1138,35 @@
     }
     
     return returnValue;
+}
+
+/**
+ *  Load and interpret file from path
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (FCLispObject *)buildinFunctionLoad:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"LOAD",
+                                                               @"numExpected" : @1}];
+    }
+    
+    if (![args.car isKindOfClass:[FCLispString class]]) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeLoadExpectedPath
+                                                    userInfo:@{@"value" : args.car}];
+    }
+    
+    FCLispString *string = (FCLispString *)args.car;
+    
+    return [FCLispInterpreter interpretFile:string.string withScopeStack:scopeStack];
 }
 
 @end
