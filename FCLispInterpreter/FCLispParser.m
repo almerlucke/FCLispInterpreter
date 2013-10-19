@@ -8,10 +8,9 @@
 
 #import "FCLispParser.h"
 #import "FCLispException.h"
-
-
-#define FCLISP_PARSER_BUFFER_LENGTH 4096
-#define FCLISP_PARSER_INITIAL_MAX_TOKEN_LENGTH 4096
+#import "FCUTF8Char.h"
+#import "FCUTF8String.h"
+#import "FCUTF8CharacterStream.h"
 
 
 #pragma mark - Exceptions
@@ -21,6 +20,8 @@
  */
 typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 {
+    FCLispParserExceptionTypeFailedToOpenStream,
+    FCLispParserExceptionTypeUTF8Error,
     FCLispParserExceptionTypeEndOfStreamBeforeEndOfComment,
     FCLispParserExceptionTypeEndOfStreamBeforeEndOfString,
     FCLispParserExceptionTypeIllegalCharacter
@@ -51,7 +52,13 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
             reason = [NSString stringWithFormat:@"Line %@, end of stream reached before end of string", lineCount];
             break;
         case FCLispParserExceptionTypeIllegalCharacter:
-            reason = [NSString stringWithFormat:@"Line %@, illegal character", lineCount];
+            reason = [NSString stringWithFormat:@"Line %@, illegal character %@", lineCount, [userInfo objectForKey:@"character"]];
+            break;
+        case FCLispParserExceptionTypeFailedToOpenStream:
+            reason = @"Failed to open parser character stream";
+            break;
+        case FCLispParserExceptionTypeUTF8Error:
+            reason = [userInfo objectForKey:@"UTF8Error"];
             break;
         default:
             break;
@@ -69,22 +76,11 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 
 @interface FCLispParser ()
 {
-    // character get
-    NSInteger _prevChar;
-    NSInteger _curChar;
-    NSInteger _nextChar;
-    NSInteger _bufferLength;
-    NSInteger _bytesAvailable;
-    NSInteger _curBytePos;
-    uint8_t *_buffer;
-    
-    // tokens
-    NSInteger _tokenMaxLength;
-    NSInteger _tokenLength;
-    uint8_t *_tokenBuffer;
-    
-    // stream
-    NSInputStream *_inputStream;
+    FCUTF8CharacterStream *_characterStream;
+    FCUTF8Char *_prevChar;
+    FCUTF8Char *_curChar;
+    FCUTF8Char *_nextChar;
+    FCUTF8String *_tokenString;
     
     // stats
     NSInteger _lineCount;
@@ -94,54 +90,14 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 
 @implementation FCLispParser
 
-#pragma mark - Init/Dealloc
-
-- (void)initialize
-{
-    _lineCount = 0;
-    _charCount = 0;
-    _prevChar = EOF;
-    _curChar = EOF;
-    _nextChar = EOF;
-    _bufferLength = FCLISP_PARSER_BUFFER_LENGTH;
-    _curBytePos = 0;
-    _buffer = (uint8_t *)malloc(sizeof(uint8_t) * _bufferLength);
-    if (!_buffer) {
-        @throw [FCLispException exceptionWithType:FCLispExceptionTypeOutOfMemory];
-    }
-    _bytesAvailable = 0;
-    
-    _tokenMaxLength = FCLISP_PARSER_INITIAL_MAX_TOKEN_LENGTH;
-    _tokenLength = 0;
-    _tokenBuffer = (uint8_t *)malloc(sizeof(uint8_t) * (_tokenMaxLength + 1));
-    if (!_tokenBuffer) {
-        @throw [FCLispException exceptionWithType:FCLispExceptionTypeOutOfMemory];
-    }
-    
-    // call getchar twice for first time (fill cur and next char)
-    [self getChar];
-    [self getChar];
-}
-
-- (void)dealloc
-{
-    if (_inputStream) {
-        [_inputStream close];
-    }
-    if (_buffer != NULL) {
-        free(_buffer);
-    }
-    if (_tokenBuffer != NULL) {
-        free(_tokenBuffer);
-    }
-}
+#pragma mark - Init
 
 - (id)init
 {
     if ((self = [super init])) {
-        _buffer = NULL;
-        _tokenBuffer = NULL;
-        _inputStream = nil;
+        _lineCount = 0;
+        _charCount = 0;
+        _tokenString = [[FCUTF8String alloc] init];
     }
     
     return self;
@@ -155,12 +111,12 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 - (id)initWithData:(NSData *)data
 {
     if ((self = [self init])) {
-        _inputStream = [NSInputStream inputStreamWithData:data];
-        [_inputStream open];
-        if (_inputStream.streamStatus != NSStreamStatusOpen) {
-            return nil;
+        _characterStream = [FCUTF8CharacterStream characterStreamWithData:data];
+        if (!_characterStream) {
+            @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeFailedToOpenStream];
         }
-        [self initialize];
+        [self getChar];
+        [self getChar];
     }
     
     return self;
@@ -169,12 +125,12 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 - (id)initWithFileAtPath:(NSString *)path
 {
     if ((self = [self init])) {
-        _inputStream = [NSInputStream inputStreamWithFileAtPath:path];
-        [_inputStream open];
-        if (_inputStream.streamStatus != NSStreamStatusOpen) {
-            return nil;
+        _characterStream = [FCUTF8CharacterStream characterStreamWithFileAtPath:path];
+        if (!_characterStream) {
+            @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeFailedToOpenStream];
         }
-        [self initialize];
+        [self getChar];
+        [self getChar];
     }
     
     return self;
@@ -200,77 +156,41 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 
 - (void)updateStats
 {
-    if (_curChar == 0x0A) {
-        if (_prevChar != 0x0D) {
+    if (_curChar.unicodeCodePoint == 0x0A) {
+        if (_prevChar.unicodeCodePoint != 0x0D) {
             _charCount = 0;
             _lineCount++;
         }
-    } else if (_curChar == 0x0D) {
+    } else if (_curChar.unicodeCodePoint == 0x0D) {
         _charCount = 0;
         _lineCount++;
-    } else if (_curChar != EOF) {
+    } else if (_curChar) {
         _charCount++;
     }
 }
 
 // get next character
-- (NSInteger)getChar
+- (FCUTF8Char *)getChar
 {
     _prevChar = _curChar;
     _curChar = _nextChar;
     
     [self updateStats];
     
-    if (_curBytePos >= _bytesAvailable) {
-        _bytesAvailable = [_inputStream read:_buffer maxLength:_bufferLength];
-        
-        // if no bytes available return EOF
-        if (_bytesAvailable < 1) {
-            _nextChar = EOF;
-        } else {
-            _curBytePos = 0;
-            // advance current byte pos
-            _nextChar = _buffer[_curBytePos++];
-        }
-    } else {
-        // advance current byte pos
-        _nextChar = _buffer[_curBytePos++];
+    NSError *error = nil;
+    _nextChar = [_characterStream getCharacter:&error];
+    
+    if (error) {
+        @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeUTF8Error
+                                               userInfo:@{@"UTF8Error": [error.userInfo objectForKey:NSLocalizedDescriptionKey]}];
     }
     
     return _curChar;
 }
 
-// add a character to token
-- (void)addTokenChar:(NSInteger)tokChar
-{
-    if (_tokenLength < _tokenMaxLength) {
-        _tokenBuffer[_tokenLength++] = tokChar;
-    } else {
-        // tokenBuffer is filled to max, set token max length to twice the size before
-        _tokenMaxLength <<= 1;
-        
-        // try to create new token buffer
-        uint8_t *newTokenBuffer = (uint8_t *)malloc(sizeof(uint8_t) * (_tokenMaxLength + 1));
-        if (!newTokenBuffer) {
-            @throw [FCLispException exceptionWithType:FCLispExceptionTypeOutOfMemory];
-        }
-        
-        // clear new token buffer and copy old token buffer into new
-        memset(newTokenBuffer, 0, _tokenMaxLength + 1);
-        memcpy(newTokenBuffer, _tokenBuffer, _tokenLength);
-        
-        // free old token buffer and set token buffer ptr to new token buffer
-        free(_tokenBuffer);
-        _tokenBuffer = newTokenBuffer;
-        
-        // try again
-        [self addTokenChar:tokChar];
-    }
-}
-
 - (void)skipWhiteSpace
 {
-    while (isspace((int)_curChar)) {
+    while (isspace((int)_curChar.unicodeCodePoint)) {
         [self getChar];
     }
 }
@@ -279,13 +199,13 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 {
     while (YES) {
         // check for end of comment char sequence */
-        if (_curChar == '*' && _nextChar == '/') {
+        if (_curChar.unicodeCodePoint == '*' && _nextChar.unicodeCodePoint == '/') {
             // skip * char
             [self getChar];
             // skip / char
             [self getChar];
             break;
-        } else if (_curChar != EOF) {
+        } else if (_curChar) {
             [self getChar];
         } else {
             @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeEndOfStreamBeforeEndOfComment
@@ -341,60 +261,58 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
      question mark	\?
      */
     while (YES) {
-        if (_curChar == '\\') {
+        if (_curChar.unicodeCodePoint == '\\') {
             // start of escape sequence, replace special escaped characters
-            if (_nextChar == 'a') {
-                [self addTokenChar:'\a'];
-            } else if (_nextChar == 'b') {
-                [self addTokenChar:'\b'];
-            } else if (_nextChar == 'r') {
-                [self addTokenChar:'\r'];
-            } else if (_nextChar == 'f') {
-                [self addTokenChar:'\f'];
-            } else if (_nextChar == 't') {
-                [self addTokenChar:'\t'];
-            } else if (_nextChar == 'n') {
-                [self addTokenChar:'\n'];
-            } else if (_nextChar == '0') {
-                [self addTokenChar:'\0'];
-            } else if (_nextChar == 'v') {
-                [self addTokenChar:'\v'];
+            if (_nextChar.unicodeCodePoint == 'a') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\a']];
+            } else if (_nextChar.unicodeCodePoint == 'b') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\b']];
+            } else if (_nextChar.unicodeCodePoint == 'r') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\r']];
+            } else if (_nextChar.unicodeCodePoint == 'f') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\f']];
+            } else if (_nextChar.unicodeCodePoint == 't') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\t']];
+            } else if (_nextChar.unicodeCodePoint == 'n') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\n']];
+            } else if (_nextChar.unicodeCodePoint == '0') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\0']];
+            } else if (_nextChar.unicodeCodePoint == 'v') {
+                [_tokenString appendCharacter:[FCUTF8Char charWithUnicodeCodePoint:'\v']];
             } else {
                 // no special character, add next char to token
-                [self addTokenChar:_nextChar];
+                [_tokenString appendCharacter:_nextChar];
             }
             // skip two chars (current and next)
             [self getChar];
             [self getChar];
-        } else if (_curChar == '"') {
+        } else if (_curChar.unicodeCodePoint == '"') {
             // end of string
             [self getChar];
             break;
-        } else if (_curChar == EOF) {
+        } else if (!_curChar) {
             // signal an error if end of stream is reached before end of string
             @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeEndOfStreamBeforeEndOfString
                                                    userInfo:[self lineInfo]];
         } else {
             // just add current char to token
-            [self addTokenChar:_curChar];
+            [_tokenString appendCharacter:_curChar];
             [self getChar];
         }
     }
     
-    NSString *value = [NSString stringWithUTF8String:(const char *)_tokenBuffer];
-    
-    return [FCLispParserToken tokenWithType:FCLispParserTokenTypeString andValue:value];
+    return [FCLispParserToken tokenWithType:FCLispParserTokenTypeString andValue:_tokenString.systemString];
 }
 
 - (FCLispParserToken *)getSymbolToken
 {
     do {
         // add chars to token while we get symbol chars from stream
-        [self addTokenChar:_curChar];
+        [_tokenString appendCharacter:_curChar];
         [self getChar];
-    } while ([[self class] isSymbolChar:_curChar]);
+    } while ([[self class] isSymbolChar:_curChar.unicodeCodePoint]);
     
-    NSString *value = [NSString stringWithUTF8String:(const char *)_tokenBuffer];
+    NSString *value = _tokenString.systemString;
     
     if ([[self class] tokenIsInteger:value]) {
         // return integer token
@@ -413,34 +331,30 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 
 - (FCLispParserToken *)getToken
 {
-    // reset token length
-    _tokenLength = 0;
-    
-    // set all token buffer bytes to zero
-    memset(_tokenBuffer, 0, _tokenMaxLength + 1);
+    _tokenString = [[FCUTF8String alloc] init];
     
     // skip whitespace
     [self skipWhiteSpace];
     
-    if (_curChar == '\'') {
+    if (_curChar.unicodeCodePoint == '\'') {
         // quote symbol
         [self getChar];
         return [FCLispParserToken tokenWithType:FCLispParserTokenTypeQuote];
-    } else if (_curChar == '(') {
+    } else if (_curChar.unicodeCodePoint == '(') {
         // start list symbol
         [self getChar];
         return [FCLispParserToken tokenWithType:FCLispParserTokenTypeOpenList];
-    } else if (_curChar == ')') {
+    } else if (_curChar.unicodeCodePoint == ')') {
         // end list symbol
         [self getChar];
         return [FCLispParserToken tokenWithType:FCLispParserTokenTypeCloseList];
-    } else if (_curChar == '"') {
+    } else if (_curChar.unicodeCodePoint == '"') {
         // skip ", get string symbol from rest chars
         [self getChar];
         return [self getStringToken];
-    } else if (_curChar == '/') {
+    } else if (_curChar.unicodeCodePoint == '/') {
         // check if we are at start of comment -> /*
-        if (_nextChar == '*') {
+        if (_nextChar.unicodeCodePoint == '*') {
             // skip / and * chars
             [self getChar];
             [self getChar];
@@ -452,11 +366,11 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
             // try to return normal symbol token
             return [self getSymbolToken];
         }
-    } else if ([[self class] isSymbolChar:_curChar]) {
+    } else if ([[self class] isSymbolChar:_curChar.unicodeCodePoint]) {
         return [self getSymbolToken];
-    } else if (_curChar != EOF) {
+    } else if (_curChar) {
         @throw [FCLispParserException exceptionWithType:FCLispParserExceptionTypeIllegalCharacter
-                                               userInfo:[self lineInfo]];
+                                               userInfo:[self userInfoWithDictionary:@{@"character": _curChar}]];
     }
     
     return nil;
