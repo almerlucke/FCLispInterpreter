@@ -140,23 +140,28 @@
 		CB5BC89917F8CB7700084263 /* FCLispInterpreter */ = {
 			isa = PBXGroup;
 			children = (
-				CB98A05B1804745C007880F7 /* FCLisp.h */,
-				CBE0255917FB3E7300DF2F76 /* FCLispEnvironment.h */,
-				CBE0255A17FB3E7300DF2F76 /* FCLispEnvironment.m */,
-				CBC1DCFA180321EA003E2AE9 /* FCLispInterpreter.h */,
-				CBC1DCFB180321EA003E2AE9 /* FCLispInterpreter.m */,
-				CB98A05818046DDC007880F7 /* FCLispEvaluator.h */,
-				CB98A05918046DDC007880F7 /* FCLispEvaluator.m */,
-				CBC1DD0018032762003E2AE9 /* FCLispListBuilder.h */,
-				CBC1DD0118032762003E2AE9 /* FCLispListBuilder.m */,
-				CBE0255317FB3A3C00DF2F76 /* FCLispScopeStack.h */,
-				CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */,
-				CB5BC8AB17F8CF7F00084263 /* FCLispException.h */,
-				CB5BC8AC17F8CF7F00084263 /* FCLispException.m */,
-				CB5BC8A517F8CB9D00084263 /* FCLispParser.h */,
-				CB5BC8A617F8CB9D00084263 /* FCLispParser.m */,
-				CB5BC8A717F8CB9D00084263 /* FCLispParserToken.h */,
-				CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */,
+				CB9468811812A18200E978D3 /* Helpers */,
+				CB9468801812A17300E978D3 /* FCUTF8 */,
+				CB94687F1812A15B00E978D3 /* FCLispCore */,
+				CB94687E1812A13F00E978D3 /* FCLispObjects */,
+				CB5BC89A17F8CB7700084263 /* main.m */,
+				CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */,
+				CB5BC89C17F8CB7700084263 /* Supporting Files */,
+			);
+			path = FCLispInterpreter;
+			sourceTree = "<group>";
+		};
+		CB5BC89C17F8CB7700084263 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CB5BC89D17F8CB7700084263 /* FCLispInterpreter-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CB94687E1812A13F00E978D3 /* FCLispObjects */ = {
+			isa = PBXGroup;
+			children = (
 				CBE0255617FB3D2500DF2F76 /* FCLispObject.h */,
 				CBE0255717FB3D2500DF2F76 /* FCLispObject.m */,
 				CB98A05218046B37007880F7 /* FCLispFunction.h */,
@@ -177,27 +182,54 @@
 				CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */,
 				CB3A5E2017FC9A0E00C86FBB /* FCLispT.h */,
 				CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */,
+			);
+			name = FCLispObjects;
+			sourceTree = "<group>";
+		};
+		CB94687F1812A15B00E978D3 /* FCLispCore */ = {
+			isa = PBXGroup;
+			children = (
+				CB98A05B1804745C007880F7 /* FCLisp.h */,
+				CBE0255917FB3E7300DF2F76 /* FCLispEnvironment.h */,
+				CBE0255A17FB3E7300DF2F76 /* FCLispEnvironment.m */,
+				CBC1DCFA180321EA003E2AE9 /* FCLispInterpreter.h */,
+				CBC1DCFB180321EA003E2AE9 /* FCLispInterpreter.m */,
+				CB98A05818046DDC007880F7 /* FCLispEvaluator.h */,
+				CB98A05918046DDC007880F7 /* FCLispEvaluator.m */,
+				CBC1DD0018032762003E2AE9 /* FCLispListBuilder.h */,
+				CBC1DD0118032762003E2AE9 /* FCLispListBuilder.m */,
+				CBE0255317FB3A3C00DF2F76 /* FCLispScopeStack.h */,
+				CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */,
+				CB5BC8AB17F8CF7F00084263 /* FCLispException.h */,
+				CB5BC8AC17F8CF7F00084263 /* FCLispException.m */,
+				CB5BC8A517F8CB9D00084263 /* FCLispParser.h */,
+				CB5BC8A617F8CB9D00084263 /* FCLispParser.m */,
+				CB5BC8A717F8CB9D00084263 /* FCLispParserToken.h */,
+				CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */,
+			);
+			name = FCLispCore;
+			sourceTree = "<group>";
+		};
+		CB9468801812A17300E978D3 /* FCUTF8 */ = {
+			isa = PBXGroup;
+			children = (
 				CB05AA5F1812918400E923B0 /* FCUTF8Char.h */,
 				CB05AA601812918400E923B0 /* FCUTF8Char.m */,
 				CB05AA611812918400E923B0 /* FCUTF8String.h */,
 				CB05AA621812918400E923B0 /* FCUTF8String.m */,
 				CB05AA631812918400E923B0 /* FCUTF8CharacterStream.h */,
 				CB05AA641812918400E923B0 /* FCUTF8CharacterStream.m */,
-				CB936D441805D44500C807F5 /* NSArray+FCLisp.h */,
-				CB936D451805D44500C807F5 /* NSArray+FCLisp.m */,
-				CB5BC89A17F8CB7700084263 /* main.m */,
-				CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */,
-				CB5BC89C17F8CB7700084263 /* Supporting Files */,
 			);
-			path = FCLispInterpreter;
+			name = FCUTF8;
 			sourceTree = "<group>";
 		};
-		CB5BC89C17F8CB7700084263 /* Supporting Files */ = {
+		CB9468811812A18200E978D3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				CB5BC89D17F8CB7700084263 /* FCLispInterpreter-Prefix.pch */,
+				CB936D441805D44500C807F5 /* NSArray+FCLisp.h */,
+				CB936D451805D44500C807F5 /* NSArray+FCLisp.m */,
 			);
-			name = "Supporting Files";
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
