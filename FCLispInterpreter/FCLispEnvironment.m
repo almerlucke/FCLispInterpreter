@@ -20,6 +20,7 @@
 #import "FCLispException.h"
 #import "FCLispLambdaFunction.h"
 #import "FCLispInterpreter.h"
+#import "FCLispDictionary.h"
 #import "NSArray+FCLisp.h"
 
 
@@ -162,6 +163,7 @@
         [self registerClass:[FCLispNumber class]];
         [self registerClass:[FCLispCons class]];
         [self registerClass:[FCLispString class]];
+        [self registerClass:[FCLispDictionary class]];
     }
     
     return self;
