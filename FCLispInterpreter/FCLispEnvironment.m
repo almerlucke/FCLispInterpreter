@@ -71,6 +71,9 @@
         case FCLispEnvironmentExceptionTypeDefineCanNotOverwriteSymbol:
             reason = [NSString stringWithFormat:@"DEFINE can not overwrite reserved or system defined symbol %@", [userInfo objectForKey:@"symbolName"]];
             break;
+        case FCLispEnvironmentExceptionTypeDefinedExpectedSymbol:
+            reason = @"DEFINE? expected a symbol as first parameter";
+            break;
         case FCLispEnvironmentExceptionTypeLetParamOverwriteReservedSymbol:
             reason = [NSString stringWithFormat:@"LET parameter shadows reserved symbol %@", [userInfo objectForKey:@"symbolName"]];
             break;
@@ -353,7 +356,7 @@
     global.type = FCLispSymbolTypeBuildin;
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionWhile:) target:self evalArgs:NO];
     global.value = function;
-    function.documentation = @"Loop through body until loop condition is NIL (WHILE loopCondition &rest body)";
+    function.documentation = @"Evaluate body until loop condition is NIL (WHILE loopCondition body)";
     function.symbol = global;
     
     // DEFINE
@@ -362,6 +365,14 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDefine:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Define a global variable (DEFINE symbol &optional value)";
+    function.symbol = global;
+    
+    // DEFINED?
+    global = [self genSym:@"defined?"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDefined:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Check if global variable is defined (DEFINED? symbol)";
     function.symbol = global;
     
     // LAMBDA
@@ -450,6 +461,14 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionLoad:) target:self evalArgs:YES];
     global.value = function;
     function.documentation = @"Load (parse, interpret and evaluate) a file containing lisp code (LOAD filePath)";
+    function.symbol = global;
+    
+    // DO
+    global = [self genSym:@"do"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDo:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Evaluate statements in body one by one (DO &rest body)";
     function.symbol = global;
 }
 
@@ -657,30 +676,31 @@
     // loop condition is in first argument
     FCLispObject *loopCondition = args.car;
     
-    // body is rest of arguments given
-    NSArray *loopBody = [NSArray arrayWithCons:(FCLispCons *)args.cdr];
+    args = (FCLispCons *)args.cdr;
     
+    // body is second argument
+    FCLispObject *loopBody = ([args isKindOfClass:[FCLispCons class]])? args.car : [FCLispNIL NIL];
     FCLispObject *loopConditionResult = [FCLispEvaluator eval:loopCondition withScopeStack:scopeStack];
     FCLispObject *returnValue = [FCLispNIL NIL];
     
-    // try/catch block to catch break exception to get out of loop prematurely
-    // if exception is not a break exception, just pass it along
-    @try {
-        // loop until condition result is NIL or a break is thrown inside the loop body
-        while ((FCLispNIL *)loopConditionResult != [FCLispNIL NIL]) {
-            // evaluate body statements one by one
-            for (id statement in loopBody) {
-                returnValue = [FCLispEvaluator eval:statement withScopeStack:scopeStack];
+    // loop until condition result is NIL or a break is thrown inside the loop body
+    while (![loopConditionResult isKindOfClass:[FCLispNIL class]]) {
+        // try/catch block to catch break exception to get out of loop prematurely
+        // if exception is not a break exception, just pass it along
+        @try {
+            // evaluate body
+            returnValue = [FCLispEvaluator eval:loopBody withScopeStack:scopeStack];
+        }
+        @catch (FCLispException *exception) {
+            if (!([exception.name isEqualToString:[FCLispEnvironmentException exceptionName]] &&
+                  exception.exceptionType == FCLispEnvironmentExceptionTypeBreak)) {
+                @throw exception;
+            } else {
+                break;
             }
-            // check loop condition again
-            loopConditionResult = [FCLispEvaluator eval:loopCondition withScopeStack:scopeStack];
         }
-    }
-    @catch (FCLispException *exception) {
-        if (!([exception.name isEqualToString:[FCLispEnvironmentException exceptionName]] &&
-              exception.exceptionType == FCLispEnvironmentExceptionTypeBreak)) {
-            @throw exception;
-        }
+        // check loop condition again
+        loopConditionResult = [FCLispEvaluator eval:loopCondition withScopeStack:scopeStack];
     }
     
     return returnValue;
@@ -728,6 +748,39 @@
     }
     
     sym.value = returnValue;
+    
+    return returnValue;
+}
+
+/**
+ *  Check if global variable is defined
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (FCLispObject *)buildinFunctionDefined:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    
+    if (argc < 1) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"DEFINE?",
+                                                               @"numExpected" : @1}];
+    }
+    
+    FCLispSymbol *sym = (FCLispSymbol *)args.car;
+    
+    if (![sym isKindOfClass:[FCLispSymbol class]]) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeDefinedExpectedSymbol];
+    }
+    
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    if (sym.type == FCLispSymbolTypeDefined) {
+        returnValue = [FCLispT T];
+    }
     
     return returnValue;
 }
@@ -1169,6 +1222,28 @@
     FCLispString *string = (FCLispString *)args.car;
     
     return [FCLispInterpreter interpretFile:string.string withScopeStack:scopeStack];
+}
+
+/**
+ *  DO, evaluate statements in body one by one
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (FCLispObject *)buildinFunctionDo:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    FCLispObject *returnValue = [FCLispNIL NIL];
+    
+    while ([args isKindOfClass:[FCLispCons class]]) {
+        returnValue = [FCLispEvaluator eval:args.car withScopeStack:scopeStack];
+        args = (FCLispCons *)args.cdr;
+    }
+    
+    
+    return returnValue;
 }
 
 @end

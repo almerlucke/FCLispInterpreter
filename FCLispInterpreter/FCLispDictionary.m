@@ -189,7 +189,7 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
 
 
 /**
- *  Set object for key
+ *  Get or set object for key (keyvalue dict "key") or (= (keyvalue dict "key") 3)
  *
  *  @param callData
  *
