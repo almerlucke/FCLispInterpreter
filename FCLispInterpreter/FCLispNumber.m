@@ -8,15 +8,7 @@
 
 #import "FCLispNumber.h"
 
-/**
- *  Number type
- */
-typedef NS_ENUM(NSInteger, FCLispNumberType)
-{
-    FCLispNumberTypeInteger = 0,
-    FCLispNumberTypeFloat = 1
-//    FCLispNumberTypeRatio = 2
-};
+
 
 
 /**
@@ -61,6 +53,21 @@ typedef union
     }
     
     return self;
+}
+
+- (FCLispNumberType)numberType
+{
+    return _type;
+}
+
+- (int64_t)integerValue
+{
+    return _valueUnion.integerValue;
+}
+
+- (double)floatValue
+{
+    return _valueUnion.floatValue;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder

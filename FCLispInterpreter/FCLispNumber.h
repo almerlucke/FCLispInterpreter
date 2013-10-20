@@ -8,7 +8,34 @@
 
 #import "FCLispObject.h"
 
+/**
+ *  Number type
+ */
+typedef NS_ENUM(NSInteger, FCLispNumberType)
+{
+    FCLispNumberTypeInteger = 0,
+    FCLispNumberTypeFloat = 1
+    //    FCLispNumberTypeRatio = 2
+};
+
+
 @interface FCLispNumber : FCLispObject
+
+/**
+ *  Get the type of number
+ */
+@property (nonatomic, readonly) FCLispNumberType numberType;
+
+/**
+ *  Get integer value from number
+ */
+@property (nonatomic, readonly) int64_t integerValue;
+
+/**
+ *  Get float value from number
+ */
+@property (nonatomic, readonly) double floatValue;
+
 
 /**
  *  Create a lisp number with a double value
