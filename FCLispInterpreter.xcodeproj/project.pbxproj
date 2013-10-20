@@ -7,34 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CB05AA651812918400E923B0 /* FCUTF8Char.m in Sources */ = {isa = PBXBuildFile; fileRef = CB05AA601812918400E923B0 /* FCUTF8Char.m */; };
-		CB05AA661812918400E923B0 /* FCUTF8String.m in Sources */ = {isa = PBXBuildFile; fileRef = CB05AA621812918400E923B0 /* FCUTF8String.m */; };
-		CB05AA671812918400E923B0 /* FCUTF8CharacterStream.m in Sources */ = {isa = PBXBuildFile; fileRef = CB05AA641812918400E923B0 /* FCUTF8CharacterStream.m */; };
-		CB3A5E1917FC8BD000C86FBB /* FCLispString.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E1817FC8BD000C86FBB /* FCLispString.m */; };
-		CB3A5E1C17FC8CB000C86FBB /* FCLispNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E1B17FC8CB000C86FBB /* FCLispNumber.m */; };
-		CB3A5E1F17FC93FA00C86FBB /* FCLispNIL.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */; };
-		CB3A5E2217FC9A0E00C86FBB /* FCLispT.m in Sources */ = {isa = PBXBuildFile; fileRef = CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */; };
+		CB0EA8E91814284900932BBE /* FCLispEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8DA1814284900932BBE /* FCLispEnvironment.m */; };
+		CB0EA8EA1814284900932BBE /* FCLispEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8DC1814284900932BBE /* FCLispEvaluator.m */; };
+		CB0EA8EB1814284900932BBE /* FCLispException.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8DE1814284900932BBE /* FCLispException.m */; };
+		CB0EA8EC1814284900932BBE /* FCLispInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8E01814284900932BBE /* FCLispInterpreter.m */; };
+		CB0EA8ED1814284900932BBE /* FCLispListBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8E21814284900932BBE /* FCLispListBuilder.m */; };
+		CB0EA8EE1814284900932BBE /* FCLispParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8E41814284900932BBE /* FCLispParser.m */; };
+		CB0EA8EF1814284900932BBE /* FCLispParserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8E61814284900932BBE /* FCLispParserToken.m */; };
+		CB0EA8F01814284900932BBE /* FCLispScopeStack.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8E81814284900932BBE /* FCLispScopeStack.m */; };
+		CB0EA90B1814285F00932BBE /* FCLispBuildinFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8F21814285E00932BBE /* FCLispBuildinFunction.m */; };
+		CB0EA90C1814285F00932BBE /* FCLispCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8F41814285E00932BBE /* FCLispCharacter.m */; };
+		CB0EA90D1814285F00932BBE /* FCLispCons.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8F61814285E00932BBE /* FCLispCons.m */; };
+		CB0EA90E1814285F00932BBE /* FCLispDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8F81814285E00932BBE /* FCLispDictionary.m */; };
+		CB0EA90F1814285F00932BBE /* FCLispFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8FA1814285E00932BBE /* FCLispFunction.m */; };
+		CB0EA9101814285F00932BBE /* FCLispLambdaFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8FC1814285E00932BBE /* FCLispLambdaFunction.m */; };
+		CB0EA9111814285F00932BBE /* FCLispNIL.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA8FE1814285E00932BBE /* FCLispNIL.m */; };
+		CB0EA9121814285F00932BBE /* FCLispNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA9001814285E00932BBE /* FCLispNumber.m */; };
+		CB0EA9131814285F00932BBE /* FCLispObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA9021814285E00932BBE /* FCLispObject.m */; };
+		CB0EA9141814285F00932BBE /* FCLispSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA9041814285E00932BBE /* FCLispSequence.m */; };
+		CB0EA9151814285F00932BBE /* FCLispString.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA9061814285F00932BBE /* FCLispString.m */; };
+		CB0EA9161814285F00932BBE /* FCLispSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA9081814285F00932BBE /* FCLispSymbol.m */; };
+		CB0EA9171814285F00932BBE /* FCLispT.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA90A1814285F00932BBE /* FCLispT.m */; };
+		CB0EA91E1814286800932BBE /* FCUTF8Char.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA9191814286800932BBE /* FCUTF8Char.m */; };
+		CB0EA91F1814286800932BBE /* FCUTF8CharacterStream.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA91B1814286800932BBE /* FCUTF8CharacterStream.m */; };
+		CB0EA9201814286800932BBE /* FCUTF8String.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA91D1814286800932BBE /* FCUTF8String.m */; };
+		CB0EA9231814287000932BBE /* NSArray+FCLisp.m in Sources */ = {isa = PBXBuildFile; fileRef = CB0EA9221814287000932BBE /* NSArray+FCLisp.m */; };
 		CB5BC89817F8CB7700084263 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5BC89717F8CB7700084263 /* Foundation.framework */; };
 		CB5BC89B17F8CB7700084263 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC89A17F8CB7700084263 /* main.m */; };
 		CB5BC89F17F8CB7700084263 /* FCLispInterpreter.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */; };
-		CB5BC8A917F8CB9D00084263 /* FCLispParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8A617F8CB9D00084263 /* FCLispParser.m */; };
-		CB5BC8AA17F8CB9D00084263 /* FCLispParserToken.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */; };
-		CB5BC8AD17F8CF7F00084263 /* FCLispException.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC8AC17F8CF7F00084263 /* FCLispException.m */; };
-		CB90DDC018140909001E8AF9 /* FCLispCharacter.m in Sources */ = {isa = PBXBuildFile; fileRef = CB90DDBF18140909001E8AF9 /* FCLispCharacter.m */; };
-		CB90DDC318140D3A001E8AF9 /* FCLispSequence.m in Sources */ = {isa = PBXBuildFile; fileRef = CB90DDC218140D3A001E8AF9 /* FCLispSequence.m */; };
-		CB936D461805D44500C807F5 /* NSArray+FCLisp.m in Sources */ = {isa = PBXBuildFile; fileRef = CB936D451805D44500C807F5 /* NSArray+FCLisp.m */; };
-		CB9468841812B46600E978D3 /* FCLispDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = CB9468831812B46600E978D3 /* FCLispDictionary.m */; };
-		CB98A05418046B37007880F7 /* FCLispFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB98A05318046B37007880F7 /* FCLispFunction.m */; };
-		CB98A05718046BDD007880F7 /* FCLispBuildinFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CB98A05618046BDD007880F7 /* FCLispBuildinFunction.m */; };
-		CB98A05A18046DDC007880F7 /* FCLispEvaluator.m in Sources */ = {isa = PBXBuildFile; fileRef = CB98A05918046DDC007880F7 /* FCLispEvaluator.m */; };
-		CBC1DCFC180321EA003E2AE9 /* FCLispInterpreter.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC1DCFB180321EA003E2AE9 /* FCLispInterpreter.m */; };
-		CBC1DCFF180325B2003E2AE9 /* FCLispCons.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC1DCFE180325B2003E2AE9 /* FCLispCons.m */; };
-		CBC1DD0218032763003E2AE9 /* FCLispListBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = CBC1DD0118032762003E2AE9 /* FCLispListBuilder.m */; };
-		CBD0A4F91807236000A0B8D8 /* FCLispLambdaFunction.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD0A4F81807236000A0B8D8 /* FCLispLambdaFunction.m */; };
-		CBE0255517FB3A3C00DF2F76 /* FCLispScopeStack.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */; };
-		CBE0255817FB3D2500DF2F76 /* FCLispObject.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE0255717FB3D2500DF2F76 /* FCLispObject.m */; };
-		CBE0255B17FB3E7300DF2F76 /* FCLispEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE0255A17FB3E7300DF2F76 /* FCLispEnvironment.m */; };
-		CBE0255E17FB3E8F00DF2F76 /* FCLispSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = CBE0255D17FB3E8F00DF2F76 /* FCLispSymbol.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -51,62 +51,62 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		CB05AA5F1812918400E923B0 /* FCUTF8Char.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCUTF8Char.h; sourceTree = "<group>"; };
-		CB05AA601812918400E923B0 /* FCUTF8Char.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCUTF8Char.m; sourceTree = "<group>"; };
-		CB05AA611812918400E923B0 /* FCUTF8String.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCUTF8String.h; sourceTree = "<group>"; };
-		CB05AA621812918400E923B0 /* FCUTF8String.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCUTF8String.m; sourceTree = "<group>"; };
-		CB05AA631812918400E923B0 /* FCUTF8CharacterStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCUTF8CharacterStream.h; sourceTree = "<group>"; };
-		CB05AA641812918400E923B0 /* FCUTF8CharacterStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCUTF8CharacterStream.m; sourceTree = "<group>"; };
-		CB3A5E1717FC8BD000C86FBB /* FCLispString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispString.h; sourceTree = "<group>"; };
-		CB3A5E1817FC8BD000C86FBB /* FCLispString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispString.m; sourceTree = "<group>"; };
-		CB3A5E1A17FC8CB000C86FBB /* FCLispNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispNumber.h; sourceTree = "<group>"; };
-		CB3A5E1B17FC8CB000C86FBB /* FCLispNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispNumber.m; sourceTree = "<group>"; };
-		CB3A5E1D17FC93FA00C86FBB /* FCLispNIL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispNIL.h; sourceTree = "<group>"; };
-		CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispNIL.m; sourceTree = "<group>"; };
-		CB3A5E2017FC9A0E00C86FBB /* FCLispT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispT.h; sourceTree = "<group>"; };
-		CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispT.m; sourceTree = "<group>"; };
+		CB0EA8D81814284900932BBE /* FCLisp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLisp.h; sourceTree = "<group>"; };
+		CB0EA8D91814284900932BBE /* FCLispEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispEnvironment.h; sourceTree = "<group>"; };
+		CB0EA8DA1814284900932BBE /* FCLispEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispEnvironment.m; sourceTree = "<group>"; };
+		CB0EA8DB1814284900932BBE /* FCLispEvaluator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispEvaluator.h; sourceTree = "<group>"; };
+		CB0EA8DC1814284900932BBE /* FCLispEvaluator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispEvaluator.m; sourceTree = "<group>"; };
+		CB0EA8DD1814284900932BBE /* FCLispException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispException.h; sourceTree = "<group>"; };
+		CB0EA8DE1814284900932BBE /* FCLispException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispException.m; sourceTree = "<group>"; };
+		CB0EA8DF1814284900932BBE /* FCLispInterpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispInterpreter.h; sourceTree = "<group>"; };
+		CB0EA8E01814284900932BBE /* FCLispInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispInterpreter.m; sourceTree = "<group>"; };
+		CB0EA8E11814284900932BBE /* FCLispListBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispListBuilder.h; sourceTree = "<group>"; };
+		CB0EA8E21814284900932BBE /* FCLispListBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispListBuilder.m; sourceTree = "<group>"; };
+		CB0EA8E31814284900932BBE /* FCLispParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispParser.h; sourceTree = "<group>"; };
+		CB0EA8E41814284900932BBE /* FCLispParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispParser.m; sourceTree = "<group>"; };
+		CB0EA8E51814284900932BBE /* FCLispParserToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispParserToken.h; sourceTree = "<group>"; };
+		CB0EA8E61814284900932BBE /* FCLispParserToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispParserToken.m; sourceTree = "<group>"; };
+		CB0EA8E71814284900932BBE /* FCLispScopeStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispScopeStack.h; sourceTree = "<group>"; };
+		CB0EA8E81814284900932BBE /* FCLispScopeStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispScopeStack.m; sourceTree = "<group>"; };
+		CB0EA8F11814285E00932BBE /* FCLispBuildinFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispBuildinFunction.h; sourceTree = "<group>"; };
+		CB0EA8F21814285E00932BBE /* FCLispBuildinFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispBuildinFunction.m; sourceTree = "<group>"; };
+		CB0EA8F31814285E00932BBE /* FCLispCharacter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispCharacter.h; sourceTree = "<group>"; };
+		CB0EA8F41814285E00932BBE /* FCLispCharacter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispCharacter.m; sourceTree = "<group>"; };
+		CB0EA8F51814285E00932BBE /* FCLispCons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispCons.h; sourceTree = "<group>"; };
+		CB0EA8F61814285E00932BBE /* FCLispCons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispCons.m; sourceTree = "<group>"; };
+		CB0EA8F71814285E00932BBE /* FCLispDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispDictionary.h; sourceTree = "<group>"; };
+		CB0EA8F81814285E00932BBE /* FCLispDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispDictionary.m; sourceTree = "<group>"; };
+		CB0EA8F91814285E00932BBE /* FCLispFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispFunction.h; sourceTree = "<group>"; };
+		CB0EA8FA1814285E00932BBE /* FCLispFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispFunction.m; sourceTree = "<group>"; };
+		CB0EA8FB1814285E00932BBE /* FCLispLambdaFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispLambdaFunction.h; sourceTree = "<group>"; };
+		CB0EA8FC1814285E00932BBE /* FCLispLambdaFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispLambdaFunction.m; sourceTree = "<group>"; };
+		CB0EA8FD1814285E00932BBE /* FCLispNIL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispNIL.h; sourceTree = "<group>"; };
+		CB0EA8FE1814285E00932BBE /* FCLispNIL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispNIL.m; sourceTree = "<group>"; };
+		CB0EA8FF1814285E00932BBE /* FCLispNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispNumber.h; sourceTree = "<group>"; };
+		CB0EA9001814285E00932BBE /* FCLispNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispNumber.m; sourceTree = "<group>"; };
+		CB0EA9011814285E00932BBE /* FCLispObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispObject.h; sourceTree = "<group>"; };
+		CB0EA9021814285E00932BBE /* FCLispObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispObject.m; sourceTree = "<group>"; };
+		CB0EA9031814285E00932BBE /* FCLispSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispSequence.h; sourceTree = "<group>"; };
+		CB0EA9041814285E00932BBE /* FCLispSequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispSequence.m; sourceTree = "<group>"; };
+		CB0EA9051814285F00932BBE /* FCLispString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispString.h; sourceTree = "<group>"; };
+		CB0EA9061814285F00932BBE /* FCLispString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispString.m; sourceTree = "<group>"; };
+		CB0EA9071814285F00932BBE /* FCLispSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispSymbol.h; sourceTree = "<group>"; };
+		CB0EA9081814285F00932BBE /* FCLispSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispSymbol.m; sourceTree = "<group>"; };
+		CB0EA9091814285F00932BBE /* FCLispT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispT.h; sourceTree = "<group>"; };
+		CB0EA90A1814285F00932BBE /* FCLispT.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispT.m; sourceTree = "<group>"; };
+		CB0EA9181814286800932BBE /* FCUTF8Char.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCUTF8Char.h; sourceTree = "<group>"; };
+		CB0EA9191814286800932BBE /* FCUTF8Char.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCUTF8Char.m; sourceTree = "<group>"; };
+		CB0EA91A1814286800932BBE /* FCUTF8CharacterStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCUTF8CharacterStream.h; sourceTree = "<group>"; };
+		CB0EA91B1814286800932BBE /* FCUTF8CharacterStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCUTF8CharacterStream.m; sourceTree = "<group>"; };
+		CB0EA91C1814286800932BBE /* FCUTF8String.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCUTF8String.h; sourceTree = "<group>"; };
+		CB0EA91D1814286800932BBE /* FCUTF8String.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCUTF8String.m; sourceTree = "<group>"; };
+		CB0EA9211814287000932BBE /* NSArray+FCLisp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+FCLisp.h"; sourceTree = "<group>"; };
+		CB0EA9221814287000932BBE /* NSArray+FCLisp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+FCLisp.m"; sourceTree = "<group>"; };
 		CB5BC89417F8CB7700084263 /* FCLispInterpreter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FCLispInterpreter; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB5BC89717F8CB7700084263 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CB5BC89A17F8CB7700084263 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CB5BC89D17F8CB7700084263 /* FCLispInterpreter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FCLispInterpreter-Prefix.pch"; sourceTree = "<group>"; };
 		CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FCLispInterpreter.1; sourceTree = "<group>"; };
-		CB5BC8A517F8CB9D00084263 /* FCLispParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispParser.h; sourceTree = "<group>"; };
-		CB5BC8A617F8CB9D00084263 /* FCLispParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispParser.m; sourceTree = "<group>"; };
-		CB5BC8A717F8CB9D00084263 /* FCLispParserToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispParserToken.h; sourceTree = "<group>"; };
-		CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispParserToken.m; sourceTree = "<group>"; };
-		CB5BC8AB17F8CF7F00084263 /* FCLispException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispException.h; sourceTree = "<group>"; };
-		CB5BC8AC17F8CF7F00084263 /* FCLispException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispException.m; sourceTree = "<group>"; };
-		CB90DDBE18140909001E8AF9 /* FCLispCharacter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispCharacter.h; sourceTree = "<group>"; };
-		CB90DDBF18140909001E8AF9 /* FCLispCharacter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispCharacter.m; sourceTree = "<group>"; };
-		CB90DDC118140D3A001E8AF9 /* FCLispSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispSequence.h; sourceTree = "<group>"; };
-		CB90DDC218140D3A001E8AF9 /* FCLispSequence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispSequence.m; sourceTree = "<group>"; };
-		CB936D441805D44500C807F5 /* NSArray+FCLisp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+FCLisp.h"; sourceTree = "<group>"; };
-		CB936D451805D44500C807F5 /* NSArray+FCLisp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+FCLisp.m"; sourceTree = "<group>"; };
-		CB9468821812B46600E978D3 /* FCLispDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispDictionary.h; sourceTree = "<group>"; };
-		CB9468831812B46600E978D3 /* FCLispDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispDictionary.m; sourceTree = "<group>"; };
-		CB98A05218046B37007880F7 /* FCLispFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispFunction.h; sourceTree = "<group>"; };
-		CB98A05318046B37007880F7 /* FCLispFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispFunction.m; sourceTree = "<group>"; };
-		CB98A05518046BDD007880F7 /* FCLispBuildinFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispBuildinFunction.h; sourceTree = "<group>"; };
-		CB98A05618046BDD007880F7 /* FCLispBuildinFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispBuildinFunction.m; sourceTree = "<group>"; };
-		CB98A05818046DDC007880F7 /* FCLispEvaluator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispEvaluator.h; sourceTree = "<group>"; };
-		CB98A05918046DDC007880F7 /* FCLispEvaluator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispEvaluator.m; sourceTree = "<group>"; };
-		CB98A05B1804745C007880F7 /* FCLisp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FCLisp.h; sourceTree = "<group>"; };
-		CBC1DCFA180321EA003E2AE9 /* FCLispInterpreter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispInterpreter.h; sourceTree = "<group>"; };
-		CBC1DCFB180321EA003E2AE9 /* FCLispInterpreter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispInterpreter.m; sourceTree = "<group>"; };
-		CBC1DCFD180325B2003E2AE9 /* FCLispCons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispCons.h; sourceTree = "<group>"; };
-		CBC1DCFE180325B2003E2AE9 /* FCLispCons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispCons.m; sourceTree = "<group>"; };
-		CBC1DD0018032762003E2AE9 /* FCLispListBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispListBuilder.h; sourceTree = "<group>"; };
-		CBC1DD0118032762003E2AE9 /* FCLispListBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispListBuilder.m; sourceTree = "<group>"; };
-		CBD0A4F71807236000A0B8D8 /* FCLispLambdaFunction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispLambdaFunction.h; sourceTree = "<group>"; };
-		CBD0A4F81807236000A0B8D8 /* FCLispLambdaFunction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispLambdaFunction.m; sourceTree = "<group>"; };
-		CBE0255317FB3A3C00DF2F76 /* FCLispScopeStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispScopeStack.h; sourceTree = "<group>"; };
-		CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispScopeStack.m; sourceTree = "<group>"; };
-		CBE0255617FB3D2500DF2F76 /* FCLispObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispObject.h; sourceTree = "<group>"; };
-		CBE0255717FB3D2500DF2F76 /* FCLispObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispObject.m; sourceTree = "<group>"; };
-		CBE0255917FB3E7300DF2F76 /* FCLispEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispEnvironment.h; sourceTree = "<group>"; };
-		CBE0255A17FB3E7300DF2F76 /* FCLispEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispEnvironment.m; sourceTree = "<group>"; };
-		CBE0255C17FB3E8F00DF2F76 /* FCLispSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispSymbol.h; sourceTree = "<group>"; };
-		CBE0255D17FB3E8F00DF2F76 /* FCLispSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispSymbol.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,80 +171,80 @@
 		CB94687E1812A13F00E978D3 /* FCLispObjects */ = {
 			isa = PBXGroup;
 			children = (
-				CBE0255617FB3D2500DF2F76 /* FCLispObject.h */,
-				CBE0255717FB3D2500DF2F76 /* FCLispObject.m */,
-				CB90DDC118140D3A001E8AF9 /* FCLispSequence.h */,
-				CB90DDC218140D3A001E8AF9 /* FCLispSequence.m */,
-				CB98A05218046B37007880F7 /* FCLispFunction.h */,
-				CB98A05318046B37007880F7 /* FCLispFunction.m */,
-				CB98A05518046BDD007880F7 /* FCLispBuildinFunction.h */,
-				CB98A05618046BDD007880F7 /* FCLispBuildinFunction.m */,
-				CBD0A4F71807236000A0B8D8 /* FCLispLambdaFunction.h */,
-				CBD0A4F81807236000A0B8D8 /* FCLispLambdaFunction.m */,
-				CBC1DCFD180325B2003E2AE9 /* FCLispCons.h */,
-				CBC1DCFE180325B2003E2AE9 /* FCLispCons.m */,
-				CBE0255C17FB3E8F00DF2F76 /* FCLispSymbol.h */,
-				CBE0255D17FB3E8F00DF2F76 /* FCLispSymbol.m */,
-				CB3A5E1717FC8BD000C86FBB /* FCLispString.h */,
-				CB3A5E1817FC8BD000C86FBB /* FCLispString.m */,
-				CB90DDBE18140909001E8AF9 /* FCLispCharacter.h */,
-				CB90DDBF18140909001E8AF9 /* FCLispCharacter.m */,
-				CB9468821812B46600E978D3 /* FCLispDictionary.h */,
-				CB9468831812B46600E978D3 /* FCLispDictionary.m */,
-				CB3A5E1A17FC8CB000C86FBB /* FCLispNumber.h */,
-				CB3A5E1B17FC8CB000C86FBB /* FCLispNumber.m */,
-				CB3A5E1D17FC93FA00C86FBB /* FCLispNIL.h */,
-				CB3A5E1E17FC93FA00C86FBB /* FCLispNIL.m */,
-				CB3A5E2017FC9A0E00C86FBB /* FCLispT.h */,
-				CB3A5E2117FC9A0E00C86FBB /* FCLispT.m */,
+				CB0EA8F11814285E00932BBE /* FCLispBuildinFunction.h */,
+				CB0EA8F21814285E00932BBE /* FCLispBuildinFunction.m */,
+				CB0EA8F31814285E00932BBE /* FCLispCharacter.h */,
+				CB0EA8F41814285E00932BBE /* FCLispCharacter.m */,
+				CB0EA8F51814285E00932BBE /* FCLispCons.h */,
+				CB0EA8F61814285E00932BBE /* FCLispCons.m */,
+				CB0EA8F71814285E00932BBE /* FCLispDictionary.h */,
+				CB0EA8F81814285E00932BBE /* FCLispDictionary.m */,
+				CB0EA8F91814285E00932BBE /* FCLispFunction.h */,
+				CB0EA8FA1814285E00932BBE /* FCLispFunction.m */,
+				CB0EA8FB1814285E00932BBE /* FCLispLambdaFunction.h */,
+				CB0EA8FC1814285E00932BBE /* FCLispLambdaFunction.m */,
+				CB0EA8FD1814285E00932BBE /* FCLispNIL.h */,
+				CB0EA8FE1814285E00932BBE /* FCLispNIL.m */,
+				CB0EA8FF1814285E00932BBE /* FCLispNumber.h */,
+				CB0EA9001814285E00932BBE /* FCLispNumber.m */,
+				CB0EA9011814285E00932BBE /* FCLispObject.h */,
+				CB0EA9021814285E00932BBE /* FCLispObject.m */,
+				CB0EA9031814285E00932BBE /* FCLispSequence.h */,
+				CB0EA9041814285E00932BBE /* FCLispSequence.m */,
+				CB0EA9051814285F00932BBE /* FCLispString.h */,
+				CB0EA9061814285F00932BBE /* FCLispString.m */,
+				CB0EA9071814285F00932BBE /* FCLispSymbol.h */,
+				CB0EA9081814285F00932BBE /* FCLispSymbol.m */,
+				CB0EA9091814285F00932BBE /* FCLispT.h */,
+				CB0EA90A1814285F00932BBE /* FCLispT.m */,
 			);
-			name = FCLispObjects;
+			path = FCLispObjects;
 			sourceTree = "<group>";
 		};
 		CB94687F1812A15B00E978D3 /* FCLispCore */ = {
 			isa = PBXGroup;
 			children = (
-				CB98A05B1804745C007880F7 /* FCLisp.h */,
-				CBE0255917FB3E7300DF2F76 /* FCLispEnvironment.h */,
-				CBE0255A17FB3E7300DF2F76 /* FCLispEnvironment.m */,
-				CBC1DCFA180321EA003E2AE9 /* FCLispInterpreter.h */,
-				CBC1DCFB180321EA003E2AE9 /* FCLispInterpreter.m */,
-				CB98A05818046DDC007880F7 /* FCLispEvaluator.h */,
-				CB98A05918046DDC007880F7 /* FCLispEvaluator.m */,
-				CBC1DD0018032762003E2AE9 /* FCLispListBuilder.h */,
-				CBC1DD0118032762003E2AE9 /* FCLispListBuilder.m */,
-				CBE0255317FB3A3C00DF2F76 /* FCLispScopeStack.h */,
-				CBE0255417FB3A3C00DF2F76 /* FCLispScopeStack.m */,
-				CB5BC8AB17F8CF7F00084263 /* FCLispException.h */,
-				CB5BC8AC17F8CF7F00084263 /* FCLispException.m */,
-				CB5BC8A517F8CB9D00084263 /* FCLispParser.h */,
-				CB5BC8A617F8CB9D00084263 /* FCLispParser.m */,
-				CB5BC8A717F8CB9D00084263 /* FCLispParserToken.h */,
-				CB5BC8A817F8CB9D00084263 /* FCLispParserToken.m */,
+				CB0EA8D81814284900932BBE /* FCLisp.h */,
+				CB0EA8D91814284900932BBE /* FCLispEnvironment.h */,
+				CB0EA8DA1814284900932BBE /* FCLispEnvironment.m */,
+				CB0EA8DB1814284900932BBE /* FCLispEvaluator.h */,
+				CB0EA8DC1814284900932BBE /* FCLispEvaluator.m */,
+				CB0EA8DD1814284900932BBE /* FCLispException.h */,
+				CB0EA8DE1814284900932BBE /* FCLispException.m */,
+				CB0EA8DF1814284900932BBE /* FCLispInterpreter.h */,
+				CB0EA8E01814284900932BBE /* FCLispInterpreter.m */,
+				CB0EA8E11814284900932BBE /* FCLispListBuilder.h */,
+				CB0EA8E21814284900932BBE /* FCLispListBuilder.m */,
+				CB0EA8E31814284900932BBE /* FCLispParser.h */,
+				CB0EA8E41814284900932BBE /* FCLispParser.m */,
+				CB0EA8E51814284900932BBE /* FCLispParserToken.h */,
+				CB0EA8E61814284900932BBE /* FCLispParserToken.m */,
+				CB0EA8E71814284900932BBE /* FCLispScopeStack.h */,
+				CB0EA8E81814284900932BBE /* FCLispScopeStack.m */,
 			);
-			name = FCLispCore;
+			path = FCLispCore;
 			sourceTree = "<group>";
 		};
 		CB9468801812A17300E978D3 /* FCUTF8 */ = {
 			isa = PBXGroup;
 			children = (
-				CB05AA5F1812918400E923B0 /* FCUTF8Char.h */,
-				CB05AA601812918400E923B0 /* FCUTF8Char.m */,
-				CB05AA611812918400E923B0 /* FCUTF8String.h */,
-				CB05AA621812918400E923B0 /* FCUTF8String.m */,
-				CB05AA631812918400E923B0 /* FCUTF8CharacterStream.h */,
-				CB05AA641812918400E923B0 /* FCUTF8CharacterStream.m */,
+				CB0EA9181814286800932BBE /* FCUTF8Char.h */,
+				CB0EA9191814286800932BBE /* FCUTF8Char.m */,
+				CB0EA91A1814286800932BBE /* FCUTF8CharacterStream.h */,
+				CB0EA91B1814286800932BBE /* FCUTF8CharacterStream.m */,
+				CB0EA91C1814286800932BBE /* FCUTF8String.h */,
+				CB0EA91D1814286800932BBE /* FCUTF8String.m */,
 			);
-			name = FCUTF8;
+			path = FCUTF8;
 			sourceTree = "<group>";
 		};
 		CB9468811812A18200E978D3 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				CB936D441805D44500C807F5 /* NSArray+FCLisp.h */,
-				CB936D451805D44500C807F5 /* NSArray+FCLisp.m */,
+				CB0EA9211814287000932BBE /* NSArray+FCLisp.h */,
+				CB0EA9221814287000932BBE /* NSArray+FCLisp.m */,
 			);
-			name = Helpers;
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -298,32 +298,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBC1DCFC180321EA003E2AE9 /* FCLispInterpreter.m in Sources */,
-				CBE0255E17FB3E8F00DF2F76 /* FCLispSymbol.m in Sources */,
-				CB98A05418046B37007880F7 /* FCLispFunction.m in Sources */,
-				CBE0255517FB3A3C00DF2F76 /* FCLispScopeStack.m in Sources */,
-				CB9468841812B46600E978D3 /* FCLispDictionary.m in Sources */,
-				CBC1DD0218032763003E2AE9 /* FCLispListBuilder.m in Sources */,
-				CB936D461805D44500C807F5 /* NSArray+FCLisp.m in Sources */,
-				CBE0255817FB3D2500DF2F76 /* FCLispObject.m in Sources */,
-				CB05AA671812918400E923B0 /* FCUTF8CharacterStream.m in Sources */,
-				CB90DDC018140909001E8AF9 /* FCLispCharacter.m in Sources */,
-				CBE0255B17FB3E7300DF2F76 /* FCLispEnvironment.m in Sources */,
-				CB90DDC318140D3A001E8AF9 /* FCLispSequence.m in Sources */,
-				CB3A5E1F17FC93FA00C86FBB /* FCLispNIL.m in Sources */,
-				CBD0A4F91807236000A0B8D8 /* FCLispLambdaFunction.m in Sources */,
-				CB3A5E2217FC9A0E00C86FBB /* FCLispT.m in Sources */,
-				CB3A5E1917FC8BD000C86FBB /* FCLispString.m in Sources */,
-				CB05AA661812918400E923B0 /* FCUTF8String.m in Sources */,
-				CB5BC8AD17F8CF7F00084263 /* FCLispException.m in Sources */,
+				CB0EA8ED1814284900932BBE /* FCLispListBuilder.m in Sources */,
+				CB0EA8EB1814284900932BBE /* FCLispException.m in Sources */,
+				CB0EA90B1814285F00932BBE /* FCLispBuildinFunction.m in Sources */,
+				CB0EA91E1814286800932BBE /* FCUTF8Char.m in Sources */,
+				CB0EA8EC1814284900932BBE /* FCLispInterpreter.m in Sources */,
+				CB0EA90F1814285F00932BBE /* FCLispFunction.m in Sources */,
+				CB0EA9161814285F00932BBE /* FCLispSymbol.m in Sources */,
+				CB0EA8F01814284900932BBE /* FCLispScopeStack.m in Sources */,
+				CB0EA9171814285F00932BBE /* FCLispT.m in Sources */,
+				CB0EA8EA1814284900932BBE /* FCLispEvaluator.m in Sources */,
+				CB0EA9201814286800932BBE /* FCUTF8String.m in Sources */,
+				CB0EA8E91814284900932BBE /* FCLispEnvironment.m in Sources */,
+				CB0EA90E1814285F00932BBE /* FCLispDictionary.m in Sources */,
+				CB0EA9141814285F00932BBE /* FCLispSequence.m in Sources */,
+				CB0EA9101814285F00932BBE /* FCLispLambdaFunction.m in Sources */,
+				CB0EA9111814285F00932BBE /* FCLispNIL.m in Sources */,
+				CB0EA9121814285F00932BBE /* FCLispNumber.m in Sources */,
+				CB0EA90C1814285F00932BBE /* FCLispCharacter.m in Sources */,
+				CB0EA9131814285F00932BBE /* FCLispObject.m in Sources */,
+				CB0EA8EF1814284900932BBE /* FCLispParserToken.m in Sources */,
+				CB0EA91F1814286800932BBE /* FCUTF8CharacterStream.m in Sources */,
+				CB0EA9231814287000932BBE /* NSArray+FCLisp.m in Sources */,
+				CB0EA8EE1814284900932BBE /* FCLispParser.m in Sources */,
+				CB0EA9151814285F00932BBE /* FCLispString.m in Sources */,
 				CB5BC89B17F8CB7700084263 /* main.m in Sources */,
-				CB98A05A18046DDC007880F7 /* FCLispEvaluator.m in Sources */,
-				CB3A5E1C17FC8CB000C86FBB /* FCLispNumber.m in Sources */,
-				CB5BC8AA17F8CB9D00084263 /* FCLispParserToken.m in Sources */,
-				CB5BC8A917F8CB9D00084263 /* FCLispParser.m in Sources */,
-				CB98A05718046BDD007880F7 /* FCLispBuildinFunction.m in Sources */,
-				CB05AA651812918400E923B0 /* FCUTF8Char.m in Sources */,
-				CBC1DCFF180325B2003E2AE9 /* FCLispCons.m in Sources */,
+				CB0EA90D1814285F00932BBE /* FCLispCons.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
