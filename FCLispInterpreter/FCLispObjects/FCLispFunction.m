@@ -11,6 +11,8 @@
 
 @implementation FCLispFunction
 
+#pragma mark - Encoding
+
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     if ((self = [super initWithCoder:aDecoder])) {
@@ -26,6 +28,9 @@
     
     [aCoder encodeBool:self.evalArgs forKey:@"evalArgs"];
 }
+
+
+#pragma mark - Eval
 
 - (FCLispObject *)eval:(FCLispCons *)args scopeStack:(FCLispScopeStack *)scopeStack
 {

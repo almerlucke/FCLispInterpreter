@@ -24,21 +24,7 @@
 
 @implementation FCLispScopeStack
 
-#pragma mark - Initialize
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [aCoder encodeObject:_stack forKey:@"stack"];
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    if ((self = [super init])) {
-        _stack = [aDecoder decodeObjectForKey:@"stack"];
-    }
-    
-    return self;
-}
+#pragma mark - Init
 
 - (void)initializeWithScope:(NSMutableDictionary *)scope
 {
@@ -68,6 +54,26 @@
     return self;
 }
 
+
+#pragma mark - Encoding
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:_stack forKey:@"stack"];
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    if ((self = [super init])) {
+        _stack = [aDecoder decodeObjectForKey:@"stack"];
+    }
+    
+    return self;
+}
+
+
+#pragma mark - Copying
+
 - (id)copyWithZone:(NSZone *)zone
 {
     return [[[self class] allocWithZone:zone] initWithScopeArray:_stack];
@@ -88,7 +94,7 @@
 }
 
 
-#pragma mark - Push And Pop
+#pragma mark - Push, Pop and Bindings
 
 - (NSArray *)stack
 {

@@ -19,6 +19,8 @@
 
 @implementation FCLispString
 
+#pragma mark - Init
+
 - (id)initWithString:(NSString *)string
 {
     if ((self = [super init])) {
@@ -33,10 +35,16 @@
     return [[FCLispString alloc] initWithString:string];
 }
 
+
+#pragma mark - Properties
+
 - (NSString *)string
 {
     return _internalString.systemString;
 }
+
+
+#pragma mark - Description
 
 - (NSString *)description
 {
@@ -60,6 +68,14 @@
     }
     
     return self;
+}
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] initWithString:_internalString.systemString];
 }
 
 

@@ -181,6 +181,23 @@ typedef NS_ENUM(NSInteger, FCLispConsExceptionType)
 }
 
 
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    id copy = nil;
+    
+    // if cdr is of type FCLispCons use copyWithZone else just use value of cdr
+    if ([self.cdr isKindOfClass:[FCLispCons class]]) {
+        copy = [[[self class] allocWithZone:zone] initWithCar:self.car andCdr:[self.cdr copyWithZone:zone]];
+    } else {
+        copy = [[[self class] allocWithZone:zone] initWithCar:self.car andCdr:self.cdr];
+    }
+    
+    return copy;
+}
+
+
 #pragma mark - Buildin Functions
 
 + (void)addGlobalBindingsToEnvironment:(FCLispEnvironment *)environment

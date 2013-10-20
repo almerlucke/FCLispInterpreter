@@ -17,6 +17,9 @@
 
 @implementation FCLispCharacter
 
+
+#pragma mark - Init
+
 - (id)initWithUTF8Char:(FCUTF8Char *)character
 {
     if ((self = [super init])) {
@@ -30,6 +33,9 @@
 {
     return [[self alloc] initWithUTF8Char:character];
 }
+
+
+#pragma mark - Encoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -46,6 +52,17 @@
     
     [aCoder encodeObject:[NSNumber numberWithUnsignedInteger:_character.unicodeCodePoint] forKey:@"codePoint"];
 }
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] initWithUTF8Char:_character];
+}
+
+
+#pragma mark - Other
 
 - (FCUTF8Char *)character
 {

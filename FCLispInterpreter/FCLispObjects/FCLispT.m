@@ -10,6 +10,8 @@
 
 @implementation FCLispT
 
+#pragma mark - Init
+
 + (FCLispT *)T
 {
     static FCLispT *sLispT = nil;
@@ -22,10 +24,16 @@
     return sLispT;
 }
 
+
+#pragma mark - Description
+
 - (NSString *)description
 {
     return @"T";
 }
+
+
+#pragma mark - Encoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
@@ -35,6 +43,15 @@
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     return [FCLispT T];
+}
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // T is a singleton so just return self
+    return self;
 }
 
 @end

@@ -10,6 +10,8 @@
 
 @implementation FCLispNIL
 
+#pragma mark - Init
+
 + (FCLispNIL *)NIL
 {
     static FCLispNIL *sLispNIL = nil;
@@ -22,10 +24,16 @@
     return sLispNIL;
 }
 
+
+#pragma mark - Description
+
 - (NSString *)description
 {
     return @"NIL";
 }
+
+
+#pragma mark - Encoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
@@ -35,6 +43,15 @@
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     return [FCLispNIL NIL];
+}
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // NIL is singleton and immutable so just return self
+    return self;
 }
 
 @end

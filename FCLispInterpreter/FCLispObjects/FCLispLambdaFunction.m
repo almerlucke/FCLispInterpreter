@@ -16,6 +16,8 @@
 #import "FCLispEvaluator.h"
 #import "FCLispException.h"
 
+
+
 #pragma mark - FClispLambaException
 
 /**
@@ -66,6 +68,8 @@ typedef NS_ENUM(NSInteger, FCLispLambdaExceptionType)
 
 @implementation FCLispLambdaFunction
 
+#pragma mark - Init
+
 - (id)init
 {
     if ((self = [super init])) {
@@ -74,6 +78,9 @@ typedef NS_ENUM(NSInteger, FCLispLambdaExceptionType)
     
     return self;
 }
+
+
+#pragma mark - Encoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -94,6 +101,22 @@ typedef NS_ENUM(NSInteger, FCLispLambdaExceptionType)
     [aCoder encodeObject:self.body forKey:@"body"];
     [aCoder encodeObject:self.capturedScopeStack forKey:@"scopeStack"];
 }
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    FCLispLambdaFunction *function = [[[self class] allocWithZone:zone] init];
+    function.params = self.params;
+    function.body = self.body;
+    function.capturedScopeStack = self.capturedScopeStack;
+    
+    return function;
+}
+
+
+#pragma mark - Eval
 
 - (FCLispObject *)eval:(FCLispCons *)args scopeStack:(FCLispScopeStack *)scopeStack
 {

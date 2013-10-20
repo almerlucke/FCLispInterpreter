@@ -78,6 +78,9 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
 
 @implementation FCLispDictionary
 
+
+#pragma mark - Init
+
 - (id)initWithDictionary:(NSDictionary *)dictionary
 {
     if ((self = [super init])) {
@@ -91,6 +94,9 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
 {
     return [[self alloc] initWithDictionary:dictionary];
 }
+
+
+#pragma mark - Encoding
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -108,6 +114,17 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
     [aCoder encodeObject:_internalStorage forKey:@"dictionary"];
 }
 
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] initWithDictionary:_internalStorage];
+}
+
+
+#pragma mark - Description
+
 - (NSString *)description
 {
     NSMutableString *str = [NSMutableString string];
@@ -123,10 +140,16 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
     return [str copy];
 }
 
+
+#pragma mark - Properties
+
 - (NSMutableDictionary *)dictionary
 {
     return _internalStorage;
 }
+
+
+#pragma mark - Build in functions
 
 + (void)addGlobalBindingsToEnvironment:(FCLispEnvironment *)environment
 {

@@ -17,19 +17,6 @@
 
 #pragma mark - Init
 
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    FCLispSymbol *sym = [FCLispSymbol genSym:[aDecoder decodeObjectForKey:@"name"]];
-    return (FCLispBuildinFunction *)sym.value;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [super encodeWithCoder:aCoder];
-    
-    [aCoder encodeObject:self.symbol.name forKey:@"name"];
-}
-
 - (id)initWithSelector:(SEL)selector
                 target:(id)target
               evalArgs:(BOOL)evalArgs
@@ -67,8 +54,32 @@
 }
 
 
+#pragma mark - Encoding
 
-#pragma mark - Override eval
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    FCLispSymbol *sym = [FCLispSymbol genSym:[aDecoder decodeObjectForKey:@"name"]];
+    return (FCLispBuildinFunction *)sym.value;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [super encodeWithCoder:aCoder];
+    
+    [aCoder encodeObject:self.symbol.name forKey:@"name"];
+}
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // no copying of build in functions
+    return self;
+}
+
+
+#pragma mark - Eval
 
 - (FCLispObject *)eval:(FCLispCons *)args scopeStack:(FCLispScopeStack *)scopeStack
 {

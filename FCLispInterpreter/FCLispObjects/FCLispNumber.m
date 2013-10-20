@@ -35,6 +35,8 @@ typedef union
 
 @implementation FCLispNumber
 
+#pragma mark - Init
+
 - (id)initWithFloatValue:(double)floatValue
 {
     if ((self = [super init])) {
@@ -55,6 +57,19 @@ typedef union
     return self;
 }
 
++ (FCLispNumber *)numberWithIntegerValue:(int64_t)integerValue
+{
+    return [[self alloc] initWithIntegerValue:integerValue];
+}
+
++ (FCLispNumber *)numberWithFloatValue:(double)floatValue
+{
+    return [[self alloc] initWithFloatValue:floatValue];
+}
+
+
+#pragma mark - Properties
+
 - (FCLispNumberType)numberType
 {
     return _type;
@@ -69,6 +84,18 @@ typedef union
 {
     return _valueUnion.floatValue;
 }
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // numbers are immutable so just return self
+    return self;
+}
+
+
+#pragma mark - Encoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
@@ -96,15 +123,8 @@ typedef union
     return self;
 }
 
-+ (FCLispNumber *)numberWithIntegerValue:(int64_t)integerValue
-{
-    return [[self alloc] initWithIntegerValue:integerValue];
-}
 
-+ (FCLispNumber *)numberWithFloatValue:(double)floatValue
-{
-    return [[self alloc] initWithFloatValue:floatValue];
-}
+#pragma mark - Description
 
 - (NSString *)description
 {

@@ -17,6 +17,9 @@
 
 @implementation FCLispSymbol
 
+
+#pragma mark - Init
+
 - (id)initWithName:(NSString *)name
 {
     if (self = [super init]) {
@@ -28,20 +31,41 @@
     return self;
 }
 
+
+#pragma mark - Gensym
+
 + (FCLispSymbol *)genSym:(NSString *)name
 {
     return [FCLispEnvironment genSym:name];
 }
+
+
+#pragma mark - Properties
 
 - (NSString *)name
 {
     return _name;
 }
 
+
+#pragma mark - Description
+
 - (NSString *)description
 {
     return self.name;
 }
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // symbols are "singleton" instances so just return self
+    return self;
+}
+
+
+#pragma mark - Encoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {

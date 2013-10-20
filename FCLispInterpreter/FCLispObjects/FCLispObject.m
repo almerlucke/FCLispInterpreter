@@ -15,6 +15,8 @@
     // do nothing
 }
 
+#pragma mark - NSCoding
+
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
     // do nothing
@@ -27,6 +29,13 @@
     }
     
     return self;
+}
+
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] init];
 }
 
 @end
