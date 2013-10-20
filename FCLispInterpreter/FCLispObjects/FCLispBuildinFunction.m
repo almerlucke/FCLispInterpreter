@@ -70,15 +70,6 @@
 }
 
 
-#pragma mark - Copying
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    // no copying of build in functions
-    return self;
-}
-
-
 #pragma mark - Eval
 
 - (FCLispObject *)eval:(FCLispCons *)args scopeStack:(FCLispScopeStack *)scopeStack

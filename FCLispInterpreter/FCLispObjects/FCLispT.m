@@ -45,13 +45,4 @@
     return [FCLispT T];
 }
 
-
-#pragma mark - Copying
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    // T is a singleton so just return self
-    return self;
-}
-
 @end

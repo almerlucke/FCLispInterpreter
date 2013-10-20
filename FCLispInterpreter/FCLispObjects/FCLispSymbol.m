@@ -56,15 +56,6 @@
 }
 
 
-#pragma mark - Copying
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    // symbols are "singleton" instances so just return self
-    return self;
-}
-
-
 #pragma mark - Encoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder

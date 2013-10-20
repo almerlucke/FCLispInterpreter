@@ -86,15 +86,6 @@ typedef union
 }
 
 
-#pragma mark - Copying
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    // numbers are immutable so just return self
-    return self;
-}
-
-
 #pragma mark - Encoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder

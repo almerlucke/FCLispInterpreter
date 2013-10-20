@@ -46,12 +46,4 @@
 }
 
 
-#pragma mark - Copying
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    // NIL is singleton and immutable so just return self
-    return self;
-}
-
 @end

@@ -35,7 +35,8 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[[self class] allocWithZone:zone] init];
+    // default copy returns self
+    return self;
 }
 
 @end
