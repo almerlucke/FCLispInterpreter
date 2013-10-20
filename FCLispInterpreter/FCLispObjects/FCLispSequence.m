@@ -69,7 +69,7 @@ typedef NS_ENUM(NSInteger, FCLispSequenceExceptionType)
         }
         case FCLispSequenceExceptionTypeSetStringIndexWithNonCharacter: {
             FCLispObject *value = [userInfo objectForKey:@"value"];
-            reason = [NSString stringWithFormat:@"NTH string sequence element index can only be set with characters, %@ is not a character", value];
+            reason = [NSString stringWithFormat:@"String sequence element at index can only be set with characters, %@ is not a character", value];
             break;
         }
         default:
@@ -116,10 +116,10 @@ typedef NS_ENUM(NSInteger, FCLispSequenceExceptionType)
     function.documentation = @"Get length of sequence (length sequence)";
     function.symbol = global;
     
-    // NTH
-    global = [environment genSym:@"nth"];
+    // ELT
+    global = [environment genSym:@"elt"];
     global.type = FCLispSymbolTypeBuildin;
-    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionNth:) target:self evalArgs:YES canBeSet:YES];
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionElt:) target:self evalArgs:YES canBeSet:YES];
     global.value = function;
     function.documentation = @"Get or set nth element of sequence (nth sequence index) or (= (nth sequence index) value)";
     function.symbol = global;
@@ -155,13 +155,13 @@ typedef NS_ENUM(NSInteger, FCLispSequenceExceptionType)
 }
 
 /**
- *  Get or set nth element of sequence
+ *  Get or set element at index of sequence
  *
  *  @param callData
  *
  *  @return
  */
-+ (FCLispObject *)buildinFunctionNth:(NSDictionary *)callData
++ (FCLispObject *)buildinFunctionElt:(NSDictionary *)callData
 {
     FCLispCons *args = [callData objectForKey:@"args"];
     FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
@@ -170,14 +170,14 @@ typedef NS_ENUM(NSInteger, FCLispSequenceExceptionType)
     
     if (argc < 2) {
         @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
-                                                    userInfo:@{@"functionName" : @"NTH",
+                                                    userInfo:@{@"functionName" : @"ELT",
                                                                @"numExpected" : @2}];
     }
     
     FCLispSequence *sequence = (FCLispSequence *)args.car;
     if (![sequence isKindOfClass:[FCLispSequence class]]) {
         @throw [FCLispSequenceException exceptionWithType:FCLispSequenceExceptionTypeExpectedSequence
-                                                 userInfo:@{@"functionName" : @"NTH",
+                                                 userInfo:@{@"functionName" : @"ELT",
                                                             @"value" : sequence}];
     }
     
@@ -186,7 +186,7 @@ typedef NS_ENUM(NSInteger, FCLispSequenceExceptionType)
     FCLispNumber *number = (FCLispNumber *)args.car;
     if (![number isKindOfClass:[FCLispNumber class]] || number.numberType != FCLispNumberTypeInteger) {
         @throw [FCLispSequenceException exceptionWithType:FCLispSequenceExceptionTypeExpectedIndex
-                                                 userInfo:@{@"functionName" : @"NTH",
+                                                 userInfo:@{@"functionName" : @"ELT",
                                                             @"value" : number}];
     }
     
