@@ -88,6 +88,8 @@ typedef NS_ENUM(NSInteger, FCLispLambdaExceptionType)
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
+    [super encodeWithCoder:aCoder];
+    
     [aCoder encodeObject:self.params forKey:@"params"];
     [aCoder encodeObject:self.body forKey:@"body"];
     [aCoder encodeObject:self.capturedScopeStack forKey:@"scopeStack"];

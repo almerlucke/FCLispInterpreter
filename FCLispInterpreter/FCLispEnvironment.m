@@ -17,9 +17,11 @@
 #import "FCLispString.h"
 #import "FCLispBuildinFunction.h"
 #import "FCLispEvaluator.h"
+#import "FCLispCharacter.h"
 #import "FCLispException.h"
 #import "FCLispLambdaFunction.h"
 #import "FCLispInterpreter.h"
+#import "FCLispSequence.h"
 #import "FCLispDictionary.h"
 #import "NSArray+FCLisp.h"
 
@@ -92,6 +94,9 @@
         case FCLispEnvironmentExceptionTypeLoadExpectedPath:
             reason = [NSString stringWithFormat:@"LOAD expected a file path as first argument, %@ is not a string", [userInfo objectForKey:@"value"]];
             break;
+        case FCLispEnvironmentExceptionTypeCondClauseIsNotAList:
+            reason = [NSString stringWithFormat:@"COND clause must be a list, %@ is not a list", [userInfo objectForKey:@"value"]];
+            break;
         default:
             break;
     }
@@ -162,10 +167,13 @@
         [self addGlobals];
          
         // register default classes
+        [self registerClass:[FCLispObject class]];
+        [self registerClass:[FCLispSequence class]];
         [self registerClass:[FCLispSymbol class]];
         [self registerClass:[FCLispNumber class]];
         [self registerClass:[FCLispCons class]];
         [self registerClass:[FCLispString class]];
+        [self registerClass:[FCLispCharacter class]];
         [self registerClass:[FCLispDictionary class]];
     }
     
@@ -469,6 +477,14 @@
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDo:) target:self evalArgs:NO];
     global.value = function;
     function.documentation = @"Evaluate statements in body one by one (DO &rest body)";
+    function.symbol = global;
+    
+    // COND
+    global = [self genSym:@"cond"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionCond:) target:self evalArgs:NO];
+    global.value = function;
+    function.documentation = @"Conditional evaluation of clauses (COND {(test {form}* )}*)";
     function.symbol = global;
 }
 
@@ -1242,6 +1258,44 @@
         args = (FCLispCons *)args.cdr;
     }
     
+    
+    return returnValue;
+}
+
+/**
+ *  Conditional evaluation of clauses. A clause must be a list, the first element is the test, the rest of the 
+ *  elements are forms which are evaluated when the test return a non-nil value.
+ *
+ *  @param callData
+ *
+ *  @return FCLispObject
+ */
+- (FCLispObject *)buildinFunctionCond:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    FCLispScopeStack *scopeStack = [callData objectForKey:@"scopeStack"];
+    FCLispObject *returnValue = [FCLispNIL NIL];
+ 
+    while ([args isKindOfClass:[FCLispCons class]]) {
+        FCLispCons *conditionList = (FCLispCons *)args.car;
+        if (![conditionList isKindOfClass:[FCLispCons class]]) {
+            @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeCondClauseIsNotAList
+                                                        userInfo:@{@"value" : args.car}];
+        }
+        FCLispObject *testValue = [FCLispEvaluator eval:conditionList.car withScopeStack:scopeStack];
+        FCLispObject *formValue = nil;
+        if (![testValue isKindOfClass:[FCLispNIL class]]) {
+            conditionList = (FCLispCons *)conditionList.cdr;
+            while ([conditionList isKindOfClass:[FCLispCons class]]) {
+                formValue = [FCLispEvaluator eval:conditionList.car withScopeStack:scopeStack];
+                conditionList = (FCLispCons *)conditionList.cdr;
+            }
+            if (!formValue) returnValue = testValue;
+            else returnValue = formValue;
+            break;
+        }
+        args = (FCLispCons *)args.cdr;
+    }
     
     return returnValue;
 }

@@ -36,7 +36,8 @@ typedef NS_ENUM(NSInteger, FCLispEnvironmentExceptionType)
     FCLispEnvironmentExceptionTypeIllegalLetVariable,
     FCLispEnvironmentExceptionTypeSerializeExpectedPath,
     FCLispEnvironmentExceptionTypeDeserializeExpectedPath,
-    FCLispEnvironmentExceptionTypeLoadExpectedPath
+    FCLispEnvironmentExceptionTypeLoadExpectedPath,
+    FCLispEnvironmentExceptionTypeCondClauseIsNotAList
 };
 
 /**

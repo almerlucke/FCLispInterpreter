@@ -18,6 +18,7 @@
 #import "FCLispParserToken.h"
 
 // object classes
+#import "FCLispSequence.h"
 #import "FCLispObject.h"
 #import "FCLispFunction.h"
 #import "FCLispBuildinFunction.h"
@@ -25,6 +26,7 @@
 #import "FCLispCons.h"
 #import "FCLispSymbol.h"
 #import "FCLispString.h"
+#import "FCLispCharacter.h"
 #import "FCLispNumber.h"
 #import "FCLispNIL.h"
 #import "FCLispT.h"

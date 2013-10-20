@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 Farcoding. All rights reserved.
 //
 
-#import "FCLispObject.h"
+#import "FCLispSequence.h"
 
 
 /**
@@ -14,7 +14,7 @@
  *  A cons has a car and a cdr, the car part is usually the value and the cdr part is usually a ptr to the next cons
  *  kind of like a linked list.
  */
-@interface FCLispCons : FCLispObject
+@interface FCLispCons : FCLispSequence
 /**
  *  Car of cons
  */
@@ -45,11 +45,5 @@
  */
 + (FCLispCons *)consWithCar:(FCLispObject *)car andCdr:(FCLispObject *)cdr;
 
-/**
- *  Get the length of this cons list
- *
- *  @return Length of list
- */
-- (NSInteger)length;
 
 @end

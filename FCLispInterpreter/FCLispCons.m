@@ -95,11 +95,11 @@ typedef NS_ENUM(NSInteger, FCLispConsExceptionType)
 }
 
 
-#pragma mark - Utils
+#pragma mark - FCLispSequence
 
-- (NSInteger)length
+- (NSUInteger)length
 {
-    NSInteger length = 1;
+    NSUInteger length = 1;
     FCLispObject *cdr = self.cdr;
     
     while ([cdr isKindOfClass:[self class]]) {
@@ -108,6 +108,30 @@ typedef NS_ENUM(NSInteger, FCLispConsExceptionType)
     }
     
     return length;
+}
+
+- (FCLispObject *)objectAtIndex:(NSUInteger)index
+{
+    FCLispCons *cons = self;
+    
+    while (index > 0) {
+        --index;
+        cons = (FCLispCons *)cons.cdr;
+    }
+    
+    return cons.car;
+}
+
+- (void)replaceObjectAtIndex:(NSUInteger)index withObject:(FCLispObject *)anObject
+{
+    FCLispCons *cons = self;
+    
+    while (index > 0) {
+        --index;
+        cons = (FCLispCons *)cons.cdr;
+    }
+    
+    cons.car = anObject;
 }
 
 
@@ -135,6 +159,8 @@ typedef NS_ENUM(NSInteger, FCLispConsExceptionType)
     return [NSString stringWithString:descString];
 }
 
+
+#pragma mark - Encoding
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {

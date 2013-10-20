@@ -51,10 +51,10 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
             reason = [NSString stringWithFormat:@"DICTIONARY parameter %@ is an invalid key-value pair", [userInfo objectForKey:@"value"]];
             break;
         case FCLispDictionaryExceptionTypeValueForKeyExpectedDictionary:
-            reason = [NSString stringWithFormat:@"KEYVALUE expected a dictionary as first argument, %@ is not a dictionary", [userInfo objectForKey:@"value"]];
+            reason = [NSString stringWithFormat:@"KEYVALUE(?) expected a dictionary as first argument, %@ is not a dictionary", [userInfo objectForKey:@"value"]];
             break;
         case FCLispDictionaryExceptionTypeValueForKeyExpectedKey:
-            reason = [NSString stringWithFormat:@"KEYVALUE expected a key as second argument, %@ is not a string", [userInfo objectForKey:@"value"]];
+            reason = [NSString stringWithFormat:@"KEYVALUE(?) expected a key as second argument, %@ is not a string", [userInfo objectForKey:@"value"]];
             break;
         default:
             break;
@@ -103,6 +103,8 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
+    [super encodeWithCoder:aCoder];
+    
     [aCoder encodeObject:_internalStorage forKey:@"dictionary"];
 }
 
@@ -149,6 +151,14 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
     function.documentation = @"Get or set a value for a key in the given dictionary,\n"
     "values can be any lisp object, keys must be strings. (KEYVALUE dictionary key).\n"
     "example usage: (KEYVALUE theDict \"theKey\") or (= (KEYVALUE theDict \"theKey\") 3)";
+    function.symbol = global;
+    
+    // KEYVALUE?
+    global = [environment genSym:@"keyvalue?"];
+    global.type = FCLispSymbolTypeBuildin;
+    function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionObjectForKeyExists:) target:self evalArgs:YES canBeSet:NO];
+    global.value = function;
+    function.documentation = @"Check if a key is set for the given dictionary (KEYVALUE? dictionary key).";
     function.symbol = global;
 }
 
@@ -235,6 +245,50 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
         returnValue = [lispDictionary.dictionary objectForKey:keyString.string];
         if (!returnValue) returnValue = [FCLispNIL NIL];
     }
+    
+    return returnValue;
+}
+
+/**
+ *  Check if a key is set on the given dictionary
+ *
+ *  @param callData
+ *
+ *  @return NIL or T
+ */
++ (FCLispObject *)buildinFunctionObjectForKeyExists:(NSDictionary *)callData
+{
+    FCLispCons *args = [callData objectForKey:@"args"];
+    NSInteger argc = ([args isKindOfClass:[FCLispCons class]])? [args length] : 0;
+    FCLispDictionary *lispDictionary = nil;
+    FCLispString *keyString = nil;
+    
+    if (argc < 2) {
+        @throw [FCLispEnvironmentException exceptionWithType:FCLispEnvironmentExceptionTypeNumArguments
+                                                    userInfo:@{@"functionName" : @"KEYVALUE?",
+                                                               @"numExpected" : @2}];
+    }
+    
+    if (![args.car isKindOfClass:[FCLispDictionary class]]) {
+        @throw [FCLispDictionaryException exceptionWithType:FCLispDictionaryExceptionTypeValueForKeyExpectedDictionary
+                                                   userInfo:@{@"value" : args.car}];
+    }
+    
+    lispDictionary = (FCLispDictionary *)args.car;
+    
+    args = (FCLispCons *)args.cdr;
+    
+    if (![args.car isKindOfClass:[FCLispString class]]) {
+        @throw [FCLispDictionaryException exceptionWithType:FCLispDictionaryExceptionTypeValueForKeyExpectedKey
+                                                   userInfo:@{@"value" : args.car}];
+    }
+    
+    keyString = (FCLispString *)args.car;
+    
+    FCLispObject *returnValue = [lispDictionary.dictionary objectForKey:keyString.string];
+    
+    if (!returnValue) returnValue = [FCLispNIL NIL];
+    else returnValue = [FCLispT T];
     
     return returnValue;
 }

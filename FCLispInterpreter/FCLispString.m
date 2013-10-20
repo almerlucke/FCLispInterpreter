@@ -8,6 +8,7 @@
 
 #import "FCLispString.h"
 #import "FCUTF8String.h"
+#import "FCLispCharacter.h"
 
 
 @interface FCLispString ()
@@ -42,6 +43,9 @@
     return [NSString stringWithFormat:@"\"%@\"", _internalString];
 }
 
+
+#pragma mark - Encoding
+
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
     [super encodeWithCoder:aCoder];
@@ -56,6 +60,24 @@
     }
     
     return self;
+}
+
+
+#pragma mark - FCLispSequence
+
+- (NSUInteger)length
+{
+    return _internalString.length;
+}
+
+- (FCLispObject *)objectAtIndex:(NSUInteger)index
+{
+    return [FCLispCharacter characterWithUTF8Char:[_internalString characterAtIndex:index]];
+}
+
+- (void)replaceObjectAtIndex:(NSUInteger)index withObject:(FCLispObject *)anObject
+{
+    [_internalString replaceCharacterAtIndex:index withCharacter:((FCLispCharacter *)anObject).character];
 }
 
 @end
