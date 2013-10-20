@@ -18,6 +18,8 @@
 #import "FCLispException.h"
 
 
+#pragma mark - FCLispEvaluatorException
+
 /**
  *  Internal evaluator exception types
  */
@@ -69,6 +71,7 @@ typedef NS_ENUM(NSInteger, FCLispEvaluatorExceptionType)
 
 
 
+#pragma mark - FCLispEvaluator
 
 @implementation FCLispEvaluator
 

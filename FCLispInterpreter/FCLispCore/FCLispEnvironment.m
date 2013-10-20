@@ -151,6 +151,9 @@
     return sDefaultEnvironment;
 }
 
+
+#pragma mark - Init
+
 - (id)init
 {
     if ((self = [super init])) {
@@ -179,6 +182,9 @@
     
     return self;
 }
+
+
+#pragma mark - Serialzie
 
 - (NSData *)serialize
 {

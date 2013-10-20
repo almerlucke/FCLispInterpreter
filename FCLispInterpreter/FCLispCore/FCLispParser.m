@@ -13,7 +13,7 @@
 #import "FCUTF8CharacterStream.h"
 
 
-#pragma mark - Exceptions
+#pragma mark - FCLispParserExceptionType
 
 /**
  *  Internal parser exception types
@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
 
 
 
-#pragma mark - Parser
+#pragma mark - FCLispParser
 
 
 @interface FCLispParser ()

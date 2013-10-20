@@ -20,6 +20,8 @@
 #import "FCLispEvaluator.h"
 
 
+#pragma mark - FCLispInterpreterException
+
 /**
  *  Internal interpreter exception types
  */
@@ -31,7 +33,6 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
     FCLispInterpreterExceptionTypeMultipleDottedListCdr,
     FCLispInterpreterExceptionTypeDotOutsideListContext
 };
-
 
 
 /**
@@ -80,7 +81,7 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
 
 
 
-
+#pragma mark - FCLispInterpreter
 
 /**
  *  Private interface
@@ -95,7 +96,7 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
 
 @implementation FCLispInterpreter
 
-#pragma mark - Init/Interpret
+#pragma mark - Init
 
 - (id)initWithParser:(FCLispParser *)parser andScopeStack:(FCLispScopeStack *)scopeStack
 {
@@ -134,6 +135,7 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
     
     return [interpreter interpret];
 }
+
 
 #pragma mark - Inner workings
 
@@ -310,7 +312,6 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
     
     return value;
 }
-
 
 // interpret parser tokens in given lisp environment
 - (FCLispObject *)interpret

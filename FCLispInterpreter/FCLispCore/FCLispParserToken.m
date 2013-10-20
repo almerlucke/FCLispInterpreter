@@ -10,6 +10,8 @@
 
 @implementation FCLispParserToken
 
+#pragma mark - Init
+
 + (FCLispParserToken *)tokenWithType:(FCLispParserTokenType)type
 {
     FCLispParserToken *token = [[FCLispParserToken alloc] init];
@@ -24,6 +26,7 @@
     token.value = value;
     return token;
 }
+
 
 #pragma mark - Description
 
