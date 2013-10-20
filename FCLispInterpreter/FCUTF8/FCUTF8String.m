@@ -29,6 +29,15 @@
     return self;
 }
 
+- (id)initWithCharacters:(NSArray *)characters
+{
+    if ((self = [super init])) {
+        _storage = [characters mutableCopy];
+    }
+    
+    return self;
+}
+
 - (id)initWithData:(NSData *)data
 {
     if ((self = [self init])) {
@@ -168,6 +177,14 @@
 - (NSString *)description
 {
     return [self systemString];
+}
+
+
+#pragma mark - Copying
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    return [[[self class] allocWithZone:zone] initWithCharacters:_storage];
 }
 
 @end

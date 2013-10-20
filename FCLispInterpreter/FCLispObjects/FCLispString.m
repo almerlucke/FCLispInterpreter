@@ -30,6 +30,15 @@
     return self;
 }
 
+- (id)initWithFCUTF8String:(FCUTF8String *)string
+{
+    if ((self = [super init])) {
+        _internalString = [string copy];
+    }
+    
+    return self;
+}
+
 + (FCLispString *)stringWithString:(NSString *)string
 {
     return [[FCLispString alloc] initWithString:string];
@@ -75,7 +84,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[[self class] allocWithZone:zone] initWithString:_internalString.systemString];
+    return [[[self class] allocWithZone:zone] initWithFCUTF8String:_internalString];
 }
 
 

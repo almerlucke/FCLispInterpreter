@@ -12,7 +12,7 @@
 @class FCUTF8Char;
 
 
-@interface FCUTF8String : NSObject
+@interface FCUTF8String : NSObject <NSCopying>
 
 /**
  *  Get an NSString object
