@@ -23,6 +23,7 @@
 #import "FCLispInterpreter.h"
 #import "FCLispSequence.h"
 #import "FCLispDictionary.h"
+#import "FCLispArray.h"
 #import "NSArray+FCLisp.h"
 
 
@@ -178,6 +179,7 @@
         [self registerClass:[FCLispString class]];
         [self registerClass:[FCLispCharacter class]];
         [self registerClass:[FCLispDictionary class]];
+        [self registerClass:[FCLispArray class]];
     }
     
     return self;

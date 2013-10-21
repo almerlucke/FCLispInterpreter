@@ -12,15 +12,17 @@
  */
 typedef NS_ENUM(NSInteger, FCLispParserTokenType)
 {
-    FCLispParserTokenTypeUnknown = 0,
-    FCLispParserTokenTypeOpenList = 1,
-    FCLispParserTokenTypeCloseList = 2,
-    FCLispParserTokenTypeQuote = 3,
-    FCLispParserTokenTypeSymbol = 4,
-    FCLispParserTokenTypeFloatNumber = 5,
-    FCLispParserTokenTypeIntegerNumber = 6,
-    FCLispParserTokenTypeString = 7,
-    FCLispParserTokenTypeDot = 8
+    FCLispParserTokenTypeUnknown,
+    FCLispParserTokenTypeOpenList,
+    FCLispParserTokenTypeCloseList,
+    FCLispParserTokenTypeQuote,
+    FCLispParserTokenTypeSymbol,
+    FCLispParserTokenTypeFloatNumber,
+    FCLispParserTokenTypeIntegerNumber,
+    FCLispParserTokenTypeString,
+    FCLispParserTokenTypeDot,
+    FCLispParserTokenTypeStartArray,
+    FCLispParserTokenTypeEndArray
 };
 
 

@@ -63,6 +63,12 @@
         case FCLispParserTokenTypeString:
             desc = [NSString stringWithFormat:@"String: \"%@\"", self.value];
             break;
+        case FCLispParserTokenTypeStartArray:
+            desc = @"Start array: [";
+            break;
+        case FCLispParserTokenTypeEndArray:
+            desc = @"End array: [";
+            break;
         default:
             break;
     }

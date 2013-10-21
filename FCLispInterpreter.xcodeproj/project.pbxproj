@@ -35,6 +35,7 @@
 		CB5BC89817F8CB7700084263 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB5BC89717F8CB7700084263 /* Foundation.framework */; };
 		CB5BC89B17F8CB7700084263 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CB5BC89A17F8CB7700084263 /* main.m */; };
 		CB5BC89F17F8CB7700084263 /* FCLispInterpreter.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */; };
+		CBD9DDD5181587EF009778E7 /* FCLispArray.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD9DDD4181587EF009778E7 /* FCLispArray.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -107,6 +108,8 @@
 		CB5BC89A17F8CB7700084263 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CB5BC89D17F8CB7700084263 /* FCLispInterpreter-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FCLispInterpreter-Prefix.pch"; sourceTree = "<group>"; };
 		CB5BC89E17F8CB7700084263 /* FCLispInterpreter.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = FCLispInterpreter.1; sourceTree = "<group>"; };
+		CBD9DDD3181587EF009778E7 /* FCLispArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLispArray.h; sourceTree = "<group>"; };
+		CBD9DDD4181587EF009778E7 /* FCLispArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCLispArray.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +182,8 @@
 				CB0EA8F61814285E00932BBE /* FCLispCons.m */,
 				CB0EA8F71814285E00932BBE /* FCLispDictionary.h */,
 				CB0EA8F81814285E00932BBE /* FCLispDictionary.m */,
+				CBD9DDD3181587EF009778E7 /* FCLispArray.h */,
+				CBD9DDD4181587EF009778E7 /* FCLispArray.m */,
 				CB0EA8F91814285E00932BBE /* FCLispFunction.h */,
 				CB0EA8FA1814285E00932BBE /* FCLispFunction.m */,
 				CB0EA8FB1814285E00932BBE /* FCLispLambdaFunction.h */,
@@ -315,6 +320,7 @@
 				CB0EA9101814285F00932BBE /* FCLispLambdaFunction.m in Sources */,
 				CB0EA9111814285F00932BBE /* FCLispNIL.m in Sources */,
 				CB0EA9121814285F00932BBE /* FCLispNumber.m in Sources */,
+				CBD9DDD5181587EF009778E7 /* FCLispArray.m in Sources */,
 				CB0EA90C1814285F00932BBE /* FCLispCharacter.m in Sources */,
 				CB0EA9131814285F00932BBE /* FCLispObject.m in Sources */,
 				CB0EA8EF1814284900932BBE /* FCLispParserToken.m in Sources */,

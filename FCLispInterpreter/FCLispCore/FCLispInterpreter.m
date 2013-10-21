@@ -18,6 +18,7 @@
 #import "FCLispListBuilder.h"
 #import "FCLispException.h"
 #import "FCLispEvaluator.h"
+#import "FCLispArray.h"
 
 
 #pragma mark - FCLispInterpreterException
@@ -29,6 +30,7 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
 {
     FCLispInterpreterExceptionTypeEmptyQuote,
     FCLispInterpreterExceptionTypeUnmatchedParenthesis,
+    FCLispInterpreterExceptionTypeUnmatchedArrayBrackets,
     FCLispInterpreterExceptionTypeDoubleDottedList,
     FCLispInterpreterExceptionTypeMultipleDottedListCdr,
     FCLispInterpreterExceptionTypeDotOutsideListContext
@@ -69,6 +71,9 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
             break;
         case FCLispInterpreterExceptionTypeDotOutsideListContext:
             reason = [NSString stringWithFormat:@"Line %@, dot outside list context", lineCount];
+            break;
+        case FCLispInterpreterExceptionTypeUnmatchedArrayBrackets:
+            reason = [NSString stringWithFormat:@"Line %@, unmatched array brackets", lineCount];
             break;
         default:
             break;
@@ -198,8 +203,62 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
     return returnValue;
 }
 
+- (FCLispObject *)getLispArray
+{
+    FCLispListBuilder *listBuilder = [FCLispListBuilder listBuilder];
+    
+    // add quote symbol as first entry in list
+    [listBuilder addCar:[FCLispSymbol genSym:@"array"]];
+    
+    while (YES) {
+        FCLispParserToken *token = [_parser getToken];
+        
+        if (!token) {
+            // no closing bracket found to match opening bracket
+            @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeUnmatchedArrayBrackets
+                                                        userInfo:[self lineInfo]];
+        } else {
+            FCLispObject *value = nil;
+            
+            if (token.type == FCLispParserTokenTypeEndArray) {
+                break;
+            } else if (token.type == FCLispParserTokenTypeStartArray) {
+                // get new array value
+                value = [self getLispArray];
+            } else if (token.type == FCLispParserTokenTypeOpenList) {
+                // get new list value
+                value = [self getLispList];
+            } else if (token.type == FCLispParserTokenTypeCloseList) {
+                // unmatched parenthesis
+                @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeUnmatchedParenthesis
+                                                            userInfo:[self lineInfo]];
+            } else if (token.type == FCLispParserTokenTypeQuote) {
+                // get quoted value
+                value = [self getLispQuoteList];
+            } else if (token.type == FCLispParserTokenTypeSymbol) {
+                // get symbol value (symbol or reserved value)
+                value = [self getLispSymbolWithToken:token];
+            } else if (token.type == FCLispParserTokenTypeFloatNumber) {
+                value = [self getLispFloatNumberWithToken:token];
+            } else if (token.type == FCLispParserTokenTypeIntegerNumber) {
+                value = [self getLispIntegerNumberWithToken:token];
+            } else if (token.type == FCLispParserTokenTypeDot) {
+                @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeDotOutsideListContext
+                                                            userInfo:[self lineInfo]];
+            } else if (token.type == FCLispParserTokenTypeString) {
+                // create a lisp string
+                value = [self getLispStringWithToken:token];
+            }
+            
+            [listBuilder addCar:value];
+        }
+    }
+    
+    return [listBuilder lispList];
+}
 
-- (id)getLispList
+
+- (FCLispObject *)getLispList
 {
     FCLispListBuilder *listBuilder = [FCLispListBuilder listBuilder];
     BOOL dotted = NO;
@@ -221,6 +280,12 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
             } else if (token.type == FCLispParserTokenTypeCloseList) {
                 // close current list
                 break;
+            } else if (token.type == FCLispParserTokenTypeStartArray) {
+                // get new array value
+                value = [self getLispArray];
+            } else if (token.type == FCLispParserTokenTypeEndArray) {
+                @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeUnmatchedArrayBrackets
+                                                            userInfo:[self lineInfo]];
             } else if (token.type == FCLispParserTokenTypeQuote) {
                 // get quoted value
                 value = [self getLispQuoteList];
@@ -262,13 +327,23 @@ typedef NS_ENUM(NSInteger, FCLispInterpreterExceptionType)
     return [listBuilder lispList];
 }
 
-- (id)getLispObject
+- (FCLispObject *)getLispObject
 {
     FCLispObject *value = nil;
     FCLispParserToken *token = [_parser getToken];
     
     if (token) {
         switch (token.type) {
+            case FCLispParserTokenTypeStartArray:
+                // get a list array
+                value = [self getLispArray];
+                break;
+            case FCLispParserTokenTypeEndArray:
+                {
+                    @throw [FCLispInterpreterException exceptionWithType:FCLispInterpreterExceptionTypeUnmatchedArrayBrackets
+                                                                userInfo:[self lineInfo]];
+                }
+                break;
             case FCLispParserTokenTypeOpenList:
                 // get a list object
                 value = [self getLispList];

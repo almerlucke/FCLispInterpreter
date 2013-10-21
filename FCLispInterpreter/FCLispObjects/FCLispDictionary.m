@@ -129,10 +129,17 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
 {
     NSMutableString *str = [NSMutableString string];
     
-    [str appendString:@"{\n"];
+    [str appendString:@"{"];
+    
+    BOOL first = YES;
     
     for (NSString *key in [_internalStorage allKeys]) {
-        [str appendFormat:@"\t\"%@\" : %@;\n", key, [_internalStorage objectForKey:key]];
+        if (first) {
+            [str appendFormat:@"\"%@\":%@;", key, [_internalStorage objectForKey:key]];
+            first = NO;
+        } else {
+            [str appendFormat:@" \"%@\":%@;", key, [_internalStorage objectForKey:key]];
+        }
     }
     
     [str appendString:@"}"];

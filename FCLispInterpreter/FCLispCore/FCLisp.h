@@ -31,3 +31,4 @@
 #import "FCLispNIL.h"
 #import "FCLispT.h"
 #import "FCLispDictionary.h"
+#import "FCLispArray.h"

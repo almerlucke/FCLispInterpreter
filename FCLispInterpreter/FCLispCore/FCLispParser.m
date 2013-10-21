@@ -348,6 +348,14 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
         // end list symbol
         [self getChar];
         return [FCLispParserToken tokenWithType:FCLispParserTokenTypeCloseList];
+    } else if (_curChar.unicodeCodePoint == '[') {
+        // start array
+        [self getChar];
+        return [FCLispParserToken tokenWithType:FCLispParserTokenTypeStartArray];
+    } else if (_curChar.unicodeCodePoint == ']') {
+        // start array
+        [self getChar];
+        return [FCLispParserToken tokenWithType:FCLispParserTokenTypeEndArray];
     } else if (_curChar.unicodeCodePoint == '"') {
         // skip ", get string symbol from rest chars
         [self getChar];
