@@ -22,7 +22,9 @@ typedef NS_ENUM(NSInteger, FCLispParserTokenType)
     FCLispParserTokenTypeString,
     FCLispParserTokenTypeDot,
     FCLispParserTokenTypeStartArray,
-    FCLispParserTokenTypeEndArray
+    FCLispParserTokenTypeEndArray,
+    FCLispParserTokenTypeStartDictionary,
+    FCLispParserTokenTypeEndDictionary
 };
 
 

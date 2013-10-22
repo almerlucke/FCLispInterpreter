@@ -67,7 +67,13 @@
             desc = @"Start array: [";
             break;
         case FCLispParserTokenTypeEndArray:
-            desc = @"End array: [";
+            desc = @"End array: ]";
+            break;
+        case FCLispParserTokenTypeStartDictionary:
+            desc = @"Start dictionary: {";
+            break;
+        case FCLispParserTokenTypeEndDictionary:
+            desc = @"End array: }";
             break;
         default:
             break;

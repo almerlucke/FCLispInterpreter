@@ -353,9 +353,17 @@ typedef NS_ENUM(NSInteger, FCLispParserExceptionType)
         [self getChar];
         return [FCLispParserToken tokenWithType:FCLispParserTokenTypeStartArray];
     } else if (_curChar.unicodeCodePoint == ']') {
-        // start array
+        // end array
         [self getChar];
         return [FCLispParserToken tokenWithType:FCLispParserTokenTypeEndArray];
+    } else if (_curChar.unicodeCodePoint == '{') {
+        // start dictionary
+        [self getChar];
+        return [FCLispParserToken tokenWithType:FCLispParserTokenTypeStartDictionary];
+    } else if (_curChar.unicodeCodePoint == '}') {
+        // end dictionary
+        [self getChar];
+        return [FCLispParserToken tokenWithType:FCLispParserTokenTypeEndDictionary];
     } else if (_curChar.unicodeCodePoint == '"') {
         // skip ", get string symbol from rest chars
         [self getChar];

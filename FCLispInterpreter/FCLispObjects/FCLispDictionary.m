@@ -26,7 +26,8 @@
  */
 typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
 {
-    FCLispDictionaryExceptionTypeInvalidKeyValuePair,
+    FCLispDictionaryExceptionTypeKeyIsNotAString,
+    FCLispDictionaryExceptionTypeExpectedKeyValue,
     FCLispDictionaryExceptionTypeValueForKeyExpectedDictionary,
     FCLispDictionaryExceptionTypeValueForKeyExpectedKey
 };
@@ -47,8 +48,11 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
     NSString *reason = @"";
     
     switch (type) {
-        case FCLispDictionaryExceptionTypeInvalidKeyValuePair:
-            reason = [NSString stringWithFormat:@"DICTIONARY parameter %@ is an invalid key-value pair", [userInfo objectForKey:@"value"]];
+        case FCLispDictionaryExceptionTypeKeyIsNotAString:
+            reason = [NSString stringWithFormat:@"DICTIONARY key must be a string, %@ is not a string", [userInfo objectForKey:@"key"]];
+            break;
+        case FCLispDictionaryExceptionTypeExpectedKeyValue:
+            reason = [NSString stringWithFormat:@"DICTIONARY expected a value for key %@", [userInfo objectForKey:@"key"]];
             break;
         case FCLispDictionaryExceptionTypeValueForKeyExpectedDictionary:
             reason = [NSString stringWithFormat:@"KEYVALUE(?) expected a dictionary as first argument, %@ is not a dictionary", [userInfo objectForKey:@"value"]];
@@ -135,10 +139,10 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
     
     for (NSString *key in [_internalStorage allKeys]) {
         if (first) {
-            [str appendFormat:@"\"%@\":%@;", key, [_internalStorage objectForKey:key]];
+            [str appendFormat:@"\"%@\" %@", key, [_internalStorage objectForKey:key]];
             first = NO;
         } else {
-            [str appendFormat:@" \"%@\":%@;", key, [_internalStorage objectForKey:key]];
+            [str appendFormat:@" \"%@\" %@", key, [_internalStorage objectForKey:key]];
         }
     }
     
@@ -169,8 +173,8 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
     function = [FCLispBuildinFunction functionWithSelector:@selector(buildinFunctionDictionary:) target:self evalArgs:YES canBeSet:NO];
     global.value = function;
     function.documentation = @"Create a dictionary object from key-value pairs, keys must be strings,\n"
-    "values can be any lisp object. (DICTIONARY &rest key-value-pair).\n"
-    "example usage: (DICTIONARY '(\"a\" 2) '(\"b\" 3))";
+    "values can be any lisp object. (DICTIONARY &rest key value).\n"
+    "example usage: (DICTIONARY \"foo\" 2 \"bar\" 3)";
     function.symbol = global;
 
     // KEYVALUE
@@ -207,26 +211,26 @@ typedef NS_ENUM(NSInteger, FCLispDictionaryExceptionType)
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     
     while ([args isKindOfClass:[FCLispCons class]]) {
-        FCLispCons *keyValuePair = (FCLispCons *)args.car;
-        if (![keyValuePair isKindOfClass:[FCLispCons class]] ||
-            ![keyValuePair.car isKindOfClass:[FCLispString class]] ||
-            ![keyValuePair.cdr isKindOfClass:[FCLispCons class]]) {
-            @throw [FCLispDictionaryException exceptionWithType:FCLispDictionaryExceptionTypeInvalidKeyValuePair
-                                                       userInfo:@{@"value": keyValuePair}];
+        FCLispString *key = (FCLispString *)args.car;
+        
+        if (![key isKindOfClass:[FCLispString class]]) {
+            @throw [FCLispDictionaryException exceptionWithType:FCLispDictionaryExceptionTypeKeyIsNotAString
+                                                       userInfo:@{@"key": key}];
         }
         
-        FCLispString *string = (FCLispString *)keyValuePair.car;
+        args = (FCLispCons *)args.cdr;
+        if (![args isKindOfClass:[FCLispCons class]]) {
+            @throw [FCLispDictionaryException exceptionWithType:FCLispDictionaryExceptionTypeExpectedKeyValue
+                                                       userInfo:@{@"key": key}];
+        }
         
-        keyValuePair = (FCLispCons *)keyValuePair.cdr;
-        
-        [dictionary setObject:keyValuePair.car forKey:string.string];
+        [dictionary setObject:args.car forKey:key.string];
         
         args = (FCLispCons *)args.cdr;
     }
     
     return [self dictionaryWithDictionary:dictionary];
 }
-
 
 /**
  *  Get or set object for key (keyvalue dict "key") or (= (keyvalue dict "key") 3)
